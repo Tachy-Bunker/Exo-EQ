@@ -1,0 +1,28 @@
+exomusica.com {
+	route /api/* {
+		reverse_proxy backend:3001
+	}
+	route /ws/* {
+		reverse_proxy backend:3001
+	}
+	route /uploads/* {
+		reverse_proxy backend:3001
+	}
+	route /o/* {
+		reverse_proxy backend:3001
+	}
+	route {
+		@bots {
+			header_regexp bot User-Agent "bot|facebookexternalhit|Twitterbot|Discordbot|LinkedInBot|WhatsApp|Slackbot|TelegramBot|Googlebot"
+		}
+		handle @bots {
+			rewrite * /embed{path}
+			reverse_proxy backend:3001
+		}
+		handle {
+			root * /srv/frontend
+			try_files {path} /index.html
+			file_server
+		}
+	}
+}

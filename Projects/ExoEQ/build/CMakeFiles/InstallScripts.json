@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/cmake_install.cmake",
+		"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

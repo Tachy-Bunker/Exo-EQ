@@ -1,0 +1,8 @@
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/iPlug2_Extras_FlexBox_obj.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/ExoEQ-app.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/ExoEQ-vst3.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/INSTALL.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/ALL_BUILD.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/ZERO_CHECK.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-build/CMakeFiles/INSTALL.dir
+F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-build/CMakeFiles/ALL_BUILD.dir

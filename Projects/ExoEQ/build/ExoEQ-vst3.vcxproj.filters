@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\ExoEQ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\Vendor\pffft\pffft.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\Vendor\MTS-ESP\libMTSClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3\IPlugVST3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3\IPlugVST3_ProcessorBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\baseiids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\fdebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\fobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\fstring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\updatehandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\thread\source\flock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces\base\funknown.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces\base\ustring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces\base\coreiids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\common\pluginview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\common\commoniids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstbus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstcomponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstcomponentbase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstinitiids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstparameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstsinglecomponenteffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\main\pluginfactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\main\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugAPIBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPaths.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPluginBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\win32_utf8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\IControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\IGraphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\IGraphicsEditorDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls\IControls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls\IPopupMenuControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls\ITextEntryControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms\IGraphicsWin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\ExoEQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\FilterCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\StateVariableFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\KeyTrack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\BandChain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugAPIBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugEditorDelegate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugMidi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugParameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPaths.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPlatform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPluginBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\fonts\Roboto-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\main.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{E83DF519-9DF4-3AE6-9835-3043BE050A17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B463F6D9-B0F8-37EF-946C-AC4D042AE52B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

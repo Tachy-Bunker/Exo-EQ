@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\04d5a3fb4009f8fa3b522f3bf0ddd103\wil-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\1fcb573d364c7e977fd78680bbd9efed\wil-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\d3226f2523987ce5143c8c7ab53d1aab\wil-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-subbuild\CMakeFiles\wil-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{79A90CE0-1251-397A-8BD9-2F43D52A0B78}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

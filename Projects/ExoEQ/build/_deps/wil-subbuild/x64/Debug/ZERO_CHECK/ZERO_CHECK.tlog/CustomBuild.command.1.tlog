@@ -1,0 +1,10 @@
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\D3226F2523987CE5143C8C7AB53D1AAB\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

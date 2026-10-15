@@ -1,0 +1,10 @@
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild --check-stamp-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

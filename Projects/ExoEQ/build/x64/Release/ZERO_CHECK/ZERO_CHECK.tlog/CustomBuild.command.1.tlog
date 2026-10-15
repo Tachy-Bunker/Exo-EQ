@@ -1,0 +1,10 @@
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\CMAKEFILES\2FBBEB434E7BD3EDF74453753CD2E486\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/ExoEQ.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\2fbbeb434e7bd3edf74453753cd2e486\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{37595A48-E28C-399F-A5E0-375A41DA43EB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

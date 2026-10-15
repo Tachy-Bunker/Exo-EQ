@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+const store = new Map<string, string>();
+(globalThis as any).localStorage = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, v), removeItem: (k: string) => void store.delete(k), get length() { return store.size; }, key: (i: number) => [...store.keys()][i] ?? null };
+const { saveDraft, loadDraft, noteListened, pinsFor } = await import("../src/lib/pins");
+saveDraft("hall", "half a thought"); saveDraft("empty", "   "); noteListened("b2"); noteListened(null);
+assert.equal(loadDraft("hall"), "half a thought"); assert.equal(loadDraft("empty"), "");
+let p = pinsFor([{ channelSlug: "hall", eventKey: "reply" }, { channelSlug: "pms-x", eventKey: "pm" }, { channelSlug: null, eventKey: "x" }]);
+assert.deepEqual([...p.get("hall")!].sort(), ["draft", "reply"]); assert.deepEqual([...p.get("branch-b2")!], ["listen"]); assert.equal(p.has("pms-x"), false); assert.equal(p.has("empty"), false);
+saveDraft("hall", ""); p = pinsFor([]); assert.equal(p.has("hall"), false, "sending clears the pin");
+console.log("ok");

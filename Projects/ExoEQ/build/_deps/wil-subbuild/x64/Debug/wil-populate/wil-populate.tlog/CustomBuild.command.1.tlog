@@ -1,0 +1,150 @@
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/tmp/wil-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-DOWNLOAD.RULE
+setlocal
+cd F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+F:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/tmp/wil-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-UPDATE.RULE
+setlocal
+cd F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-src
+if %errorlevel% neq 0 goto :cmEnd
+F:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/tmp/wil-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-CONFIGURE.RULE
+setlocal
+cd F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-build
+if %errorlevel% neq 0 goto :cmEnd
+F:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-BUILD.RULE
+setlocal
+cd F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-build
+if %errorlevel% neq 0 goto :cmEnd
+F:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-INSTALL.RULE
+setlocal
+cd F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-build
+if %errorlevel% neq 0 goto :cmEnd
+F:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\04D5A3FB4009F8FA3B522F3BF0DDD103\WIL-POPULATE-TEST.RULE
+setlocal
+cd F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\_deps\wil-build
+if %errorlevel% neq 0 goto :cmEnd
+F:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\1FCB573D364C7E977FD78680BBD9EFED\WIL-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/CMakeFiles/Debug/wil-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/wil-populate-prefix/src/wil-populate-stamp/Debug/wil-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKEFILES\D3226F2523987CE5143C8C7AB53D1AAB\WIL-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\EXOMUSICA\TOOLS\EXOEQV1\PROJECTS\EXOEQ\BUILD\_DEPS\WIL-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild --check-stamp-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

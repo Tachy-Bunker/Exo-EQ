@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import { worthShowing, awayLabel, type Digest } from "../src/lib/digest";
+const d = (o: Partial<Digest> = {}): Digest => ({ since: 0, replies: { count: 0, items: [] }, albums: [], studies: [], topics: [], ...o });
+const now = 1_790_000_000_000, h = 3_600_000;
+assert.equal(worthShowing(null, d({ albums: [{ slug: "a", title: "t", branch: "b" }] }), now), false);
+assert.equal(worthShowing(now - 2 * h, d({ albums: [{ slug: "a", title: "t", branch: "b" }] }), now), false);
+assert.equal(worthShowing(now - 8 * h, d(), now), false);
+assert.equal(worthShowing(now - 8 * h, null, now), false);
+assert.equal(worthShowing(now - 8 * h, {} as Digest, now), false);
+assert.equal(worthShowing(now - 8 * h, d({ replies: { count: 2, items: [] } }), now), true);
+assert.equal(awayLabel(10 * h), "10 h"); assert.equal(awayLabel(72 * h), "3 days");
+console.log("digestui ok");

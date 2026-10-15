@@ -1,0 +1,570 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{55BE36E3-27F2-356C-8C96-AB1700F019FD}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ExoEQ-vst3</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\out\ExoEQ.vst3\Contents\x86_64-win\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ExoEQ-vst3.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ExoEQ</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.vst3</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Program Files/REAPER (x64)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Program Files/REAPER (x64)/reaper.exe</LocalDebuggerCommand>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\out\ExoEQ.vst3\Contents\x86_64-win\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ExoEQ-vst3.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ExoEQ</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.vst3</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Program Files/REAPER (x64)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Program Files/REAPER (x64)/reaper.exe</LocalDebuggerCommand>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\out\ExoEQ.vst3\Contents\x86_64-win\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ExoEQ-vst3.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ExoEQ</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.vst3</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Program Files/REAPER (x64)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Program Files/REAPER (x64)/reaper.exe</LocalDebuggerCommand>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\out\ExoEQ.vst3\Contents\x86_64-win\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ExoEQ-vst3.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ExoEQ</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.vst3</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Program Files/REAPER (x64)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Program Files/REAPER (x64)/reaper.exe</LocalDebuggerCommand>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/VST3" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/pluginterfaces" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk/source" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/base" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/libpng" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/zlib" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoSVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/include" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Controls" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Drawing" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Platforms" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/STB"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;4018;4267;4068;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;DEVELOPMENT;NOMINMAX;DEBUG;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR="Debug";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;DEVELOPMENT;NOMINMAX;DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR=\"Debug\";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>Creating VST3 bundle structure for ExoEQ	[iPlug2] Deploying ExoEQ.vst3 (copy)</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/Resources
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo "[iPlug2] Copying plugin: C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3"
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -rf C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3 C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Shlwapi.lib;comctl32.lib;wininet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/Debug/ExoEQ.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/x86_64-win/ExoEQ.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/VST3" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/pluginterfaces" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk/source" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/base" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/libpng" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/zlib" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoSVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/include" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Controls" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Drawing" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Platforms" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/STB"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4250;4018;4267;4068;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR="Release";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR=\"Release\";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>Creating VST3 bundle structure for ExoEQ	[iPlug2] Deploying ExoEQ.vst3 (copy)</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/Resources
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo "[iPlug2] Copying plugin: C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3"
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -rf C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3 C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Shlwapi.lib;comctl32.lib;wininet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/Release/ExoEQ.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/x86_64-win/ExoEQ.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/VST3" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/pluginterfaces" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk/source" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/base" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/libpng" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/zlib" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoSVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/include" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Controls" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Drawing" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Platforms" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/STB"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4250;4018;4267;4068;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR="MinSizeRel";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR=\"MinSizeRel\";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>Creating VST3 bundle structure for ExoEQ	[iPlug2] Deploying ExoEQ.vst3 (copy)</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/Resources
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo "[iPlug2] Copying plugin: C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3"
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -rf C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3 C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Shlwapi.lib;comctl32.lib;wininet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/MinSizeRel/ExoEQ.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/x86_64-win/ExoEQ.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/VST3" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/pluginterfaces" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/public.sdk/source" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IPlug/VST3_SDK/base" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/libpng" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/WDL/zlib" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IPlug/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/NanoSVG/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/include" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/glad_GL2/src" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Controls" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Drawing" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Platforms" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/IGraphics/Extras" /external:I "F:/Work/Exomusica/Tools/ExoEQV1/iPlug2/Dependencies/IGraphics/STB"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;4018;4267;4068;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR="RelWithDebInfo";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VST3_API;IPLUG_EDITOR=1;IPLUG_DSP=1;RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_MBCS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;IGRAPHICS_NANOVG;IGRAPHICS_GL2;CMAKE_INTDIR=\"RelWithDebInfo\";ExoEQ_vst3_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\libpng;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\zlib;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\NanoSVG\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\include;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\glad_GL2\src;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Drawing;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Extras;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IGraphics\STB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>Creating VST3 bundle structure for ExoEQ	[iPlug2] Deploying ExoEQ.vst3 (copy)</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/Resources
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo "[iPlug2] Copying plugin: C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3"
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -rf C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_directory F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3 C:\Users\ShrekitoBoy\AppData\Local/Programs/Common/VST3/ExoEQ.vst3
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Shlwapi.lib;comctl32.lib;wininet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/RelWithDebInfo/ExoEQ.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/out/ExoEQ.vst3/Contents/x86_64-win/ExoEQ.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build --check-stamp-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeSystem.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\AAX.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\APP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\CLAP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\Deploy.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\FindiPlug2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IGraphics.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlug.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlugPlugin.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST3.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\iPlug2.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build --check-stamp-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeSystem.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\AAX.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\APP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\CLAP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\Deploy.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\FindiPlug2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IGraphics.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlug.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlugPlugin.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST3.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\iPlug2.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build --check-stamp-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeSystem.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\AAX.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\APP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\CLAP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\Deploy.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\FindiPlug2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IGraphics.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlug.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlugPlugin.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST3.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\iPlug2.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ -BF:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build --check-stamp-file F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\4.1.1\CMakeSystem.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\AAX.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\APP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\CLAP.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\Deploy.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\FindiPlug2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IGraphics.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlug.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\IPlugPlugin.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST2.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Scripts\cmake\VST3.cmake;F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\iPlug2.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\ExoEQ.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\ExoEQ.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\FilterCore.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\StateVariableFilter.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\KeyTrack.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\DSP\BandChain.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\resource.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\Vendor\pffft\pffft.c" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\Vendor\MTS-ESP\libMTSClient.cpp" />
+    <None Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\fonts\Roboto-Regular.ttf">
+    </None>
+    <ResourceCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\main.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\fonts;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\img;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\fonts;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\img;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\fonts;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\img;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\fonts;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources\img;F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3\IPlugVST3.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\VST3\IPlugVST3_ProcessorBase.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\baseiids.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\fdebug.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\fobject.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\fstring.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\source\updatehandler.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\base\thread\source\flock.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces\base\funknown.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces\base\ustring.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\pluginterfaces\base\coreiids.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\common\pluginview.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\common\commoniids.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstbus.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstcomponent.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstcomponentbase.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstinitiids.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstparameters.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\vst\vstsinglecomponenteffect.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\main\pluginfactory.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\Dependencies\IPlug\VST3_SDK\public.sdk\source\main\dllmain.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugAPIBase.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugAPIBase.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugConstants.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugEditorDelegate.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugLogger.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugMidi.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugParameter.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugParameter.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPaths.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPaths.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPlatform.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPluginBase.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugPluginBase.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugProcessor.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugProcessor.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugQueue.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugStructs.h" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugTimer.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugTimer.cpp" />
+    <ClInclude Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IPlug\IPlugUtilities.h" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\WDL\win32_utf8.c" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\IControl.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\IGraphics.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\IGraphicsEditorDelegate.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls\IControls.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls\IPopupMenuControl.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Controls\ITextEntryControl.cpp" />
+    <ClCompile Include="F:\Work\Exomusica\Tools\ExoEQV1\iPlug2\IGraphics\Platforms\IGraphicsWin.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="F:\Work\Exomusica\Tools\ExoEQV1\Projects\ExoEQ\build\ZERO_CHECK.vcxproj">
+      <Project>{FFCF39D7-B34F-32C5-8AC4-C807740FFAD5}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
