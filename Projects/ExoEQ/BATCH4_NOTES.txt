@@ -1,0 +1,6 @@
+Re-flow the compact row when knobs are hidden.
+
+ExoEQ.cpp (refreshKnobNames): after the n/a hide pass, the visible compact controls (Type, Cutoff, Reso, Morph, Extra, Gain, Mute, Delta) are placed into the 8 grid cells left to right. Hidden knobs no longer leave an empty slot.
+Placement uses SetTargetRECT on each control with the same sizes as before (Type 90x40, toggles 70x40, knobs KnobSize(70)).
+
+Not build-verified. If a control does not move, check that SetTargetRECT is the right call for this iPlug2 version (IControl::SetTargetRECT).

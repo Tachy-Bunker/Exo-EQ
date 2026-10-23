@@ -1,0 +1,11 @@
+Hide knobs that do nothing for the selected filter type.
+
+ExoEQ.cpp (refreshKnobNames): a knob whose per-type label is "n/a" is now hidden (Hide(true)). Visible knobs are shown again on a type change.
+Affected types (from KnobNamesForType):
+- Z-Lowpass: Extra hidden
+- Hermepass: Reso and Extra hidden
+- SlewSonic: Reso and Extra hidden
+- AverMatrix: Extra hidden
+
+Known gap: the compact row keeps its 8 cells, so a hidden knob leaves an empty slot. Re-flowing the visible knobs into the freed space is a separate pass.
+Not build-verified.

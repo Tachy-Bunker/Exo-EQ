@@ -1,66 +1,66 @@
 #pragma once
 
 #include "FilterCore.h"
-#include "StateVariableFilter.h"
+#include "FilterTypes.h"
 #include <complex>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 // FrequencyResponse.h
-// Math for the planned spectrum-graph UI (draggable band nodes over a
-// response curve, Pro-Q style). Deliberately separated from any drawing
-// code: this is pure DSP analysis, fully testable without iGraphics or
-// the real iPlug2 SDK, which the actual curve-rendering control will not
-// be (same limitation as every other "can't compile-test this without
-// the vendored SDK" caveat so far).
+// Measured small-signal complex response of a band's ACTUAL filter (the same
+// MultiPoleFilter BandChain runs), used by the graph's response curve.
 //
-// Returns a genuine COMPLEX gain (magnitude AND phase), not just a dB
-// magnitude number, specifically so multiple parallel bands' responses
-// can be summed correctly. Bands here run in parallel, not in series --
-// summing their magnitudes (or dB values) directly is what most simple
-// EQ-curve implementations do, and it's wrong whenever bands overlap:
-// two bands' responses can partially cancel or reinforce depending on
-// their relative phase at a given frequency, and only summing the actual
-// complex gains captures that. Getting this wrong would show a visibly
-// inaccurate curve on exactly the kind of overlapping/resonant bands this
-// plugin is built around.
+// REWRITTEN THIS ROUND:
+//  - Measures MultiPoleFilter, not StateVariableFilter. The old version only
+//    matched the MorphZ type; every other type was measured through the wrong
+//    filter.
+//  - One filter instance is reused across a whole table (was: a new filter per
+//    frequency point).
+//  - The measurement window is a whole number of cycles, so leakage cancels in
+//    the correlation ratio, and it is never shorter than ~1024 samples.
+//  - BuildResponseTable() fills a log-spaced table once per band; the graph
+//    reads the table, so painting costs a few lookups per band, not a filter run.
 //
-// Implementation: reuses the REAL StateVariableFilter class (zero risk of
-// the analysis formula drifting from what the audio engine actually
-// does), driven with a real cosine at the target frequency, and measures
-// the steady-state complex gain via a single-frequency correlation
-// (a Goertzel-style single-bin DFT) of the output against the SAME
-// windowed input -- taking the ratio of output-correlation to
-// input-correlation cancels out windowing/leakage error as long as the
-// measurement window is long relative to the filter's own settle time,
-// rather than needing a hand-derived closed-form transfer function that
-// could subtly mismatch the actual difference equations.
+// Scope: this is SMALL-SIGNAL. Nonlinear types (Airwindows sin-folds, combs,
+// ring mod, resampler, FM, formant, phaser, physical resonators) are measured
+// with a tiny probe, so the curve shows their response to a quiet input only.
+// Their loud-signal character is not shown.
+//
+// Sums are complex: parallel bands add as complex gains, so overlap cancels or
+// reinforces correctly.
 
 namespace exoeq
 {
 
-// Complex gain of a single band's filter at `freqHz`, at the given
-// sample rate -- H(e^{j*2*pi*freqHz/sampleRate}) for THIS implementation's
-// actual difference equations, not an idealized textbook SVF.
-inline std::complex<double> ComplexFilterResponse(const FilterParams& params, double sampleRate, double freqHz)
+// Probe amplitude. Small enough to stay in the filter's linear region for
+// most types; the ratio cancels the amplitude anyway.
+constexpr double kResponseProbeAmp = 1e-3;
+
+// Complex gain of one band's filter at `freqHz`, measured with a reused
+// filter. `filter` must already have SetSampleRate() applied.
+inline std::complex<double> MeasureComplexGain(IFilterNode& filter, const FilterParams& params, double sampleRate, double freqHz)
 {
-  StateVariableFilter filter;
-  filter.SetSampleRate(sampleRate);
+  constexpr double kPi = 3.14159265358979323846;
+  const double omega = 2.0 * kPi * freqHz / sampleRate;
+  const double period = sampleRate / std::max(1.0, freqHz); // samples per cycle
+
+  // Settle time: high Q rings longer; low cutoffs settle slower in samples.
+  const double settle = std::clamp(params.resonance * 400.0 + sampleRate / std::max(20.0, params.cutoffHz) * 20.0, 500.0, 20000.0);
+  const int settleSamples = static_cast<int>(settle + 3.0 * period);
+
+  // Measurement: whole cycles, at least 1024 samples.
+  const int cycles = std::max(4, static_cast<int>(std::ceil(1024.0 / period)));
+  const int windowSamples = std::max(1, static_cast<int>(std::lround(cycles * period)));
+
+  filter.Reset();
   filter.SetParams(params);
 
-  const double omega = 2.0 * 3.14159265358979323846 * freqHz / sampleRate;
-
-  // Settle long enough for the filter's transient to decay -- scales with
-  // resonance (a high-Q band rings longer) and with how low the cutoff is
-  // relative to the sample rate (slower filters settle slower in samples).
-  const int settleSamples = std::clamp(static_cast<int>(params.resonance * 400.0 + sampleRate / std::max(20.0, params.cutoffHz) * 20.0), 500, 20000);
-  const int windowSamples = std::max(2000, settleSamples); // measurement window, post-settle
-
   std::complex<double> inputCorr(0.0, 0.0), outputCorr(0.0, 0.0);
-
-  for (int n = 0; n < settleSamples + windowSamples; ++n)
+  const int total = settleSamples + windowSamples;
+  for (int n = 0; n < total; ++n)
   {
-    const double x = std::cos(omega * n);
+    const double x = kResponseProbeAmp * std::cos(omega * n);
     const double y = filter.ProcessSample(x);
     if (n >= settleSamples)
     {
@@ -70,33 +70,47 @@ inline std::complex<double> ComplexFilterResponse(const FilterParams& params, do
     }
   }
 
-  if (std::abs(inputCorr) < 1e-12)
-    return std::complex<double>(0.0, 0.0); // degenerate (shouldn't happen for a real cosine, guards div-by-~0 anyway
-
+  if (std::abs(inputCorr) < 1e-18)
+    return std::complex<double>(0.0, 0.0);
   return outputCorr / inputCorr;
+}
+
+// Fills `out[i]` with the complex gain at `freqs[i]` for one band. One filter
+// instance is reused for the whole table.
+inline void BuildResponseTable(const FilterParams& params, double sampleRate, const std::vector<double>& freqs, std::vector<std::complex<double>>& out)
+{
+  MultiPoleFilter filter;
+  filter.SetSampleRate(sampleRate);
+  out.resize(freqs.size());
+  for (size_t i = 0; i < freqs.size(); ++i)
+    out[i] = MeasureComplexGain(filter, params, sampleRate, freqs[i]);
+}
+
+// Log-spaced grid over [fMin, fMax] with `n` points.
+inline std::vector<double> MakeLogFreqGrid(double fMin, double fMax, int n)
+{
+  std::vector<double> f(static_cast<size_t>(n));
+  const double lo = std::log(fMin), hi = std::log(fMax);
+  for (int i = 0; i < n; ++i)
+    f[static_cast<size_t>(i)] = std::exp(lo + (hi - lo) * i / std::max(1, n - 1));
+  return f;
+}
+
+// Linear interpolation in log-frequency on a table built by MakeLogFreqGrid.
+inline std::complex<double> InterpResponse(const std::vector<std::complex<double>>& table, double fMin, double fMax, double freqHz)
+{
+  if (table.empty()) return { 0.0, 0.0 };
+  const double lo = std::log(fMin), hi = std::log(fMax);
+  const double pos = std::clamp((std::log(std::clamp(freqHz, fMin, fMax)) - lo) / (hi - lo), 0.0, 1.0) * static_cast<double>(table.size() - 1);
+  const size_t i0 = static_cast<size_t>(pos);
+  const size_t i1 = std::min(i0 + 1, table.size() - 1);
+  const double frac = pos - static_cast<double>(i0);
+  return table[i0] * (1.0 - frac) + table[i1] * frac;
 }
 
 inline double MagnitudeToDb(std::complex<double> gain)
 {
-  const double mag = std::abs(gain);
-  return 20.0 * std::log10(std::max(1e-12, mag));
-}
-
-// Sums the COMPLEX gains of every given band at `freqHz` -- correct for
-// a parallel topology (see file header). Muted bands are skipped (they
-// contribute silence, not a 0dB-passthrough or anything else); this
-// mirrors Band::ProcessSample's own mute behavior, not just magnitude=0.
-struct BandResponseInput { FilterParams filter; bool muted; double gainLinear; };
-
-inline std::complex<double> ComplexCombinedResponse(const std::vector<BandResponseInput>& bands, double sampleRate, double freqHz)
-{
-  std::complex<double> total(0.0, 0.0);
-  for (const auto& b : bands)
-  {
-    if (b.muted) continue;
-    total += ComplexFilterResponse(b.filter, sampleRate, freqHz) * b.gainLinear;
-  }
-  return total;
+  return 20.0 * std::log10(std::max(1e-12, std::abs(gain)));
 }
 
 } // namespace exoeq

@@ -103,7 +103,7 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=C:/Program Files (x86)/Microsoft Visual Studio
 //Name of generator platform.
 CMAKE_GENERATOR_PLATFORM:INTERNAL=x64
 //Name of generator toolset.
-CMAKE_GENERATOR_TOOLSET:INTERNAL=
+CMAKE_GENERATOR_TOOLSET:INTERNAL=host=x64
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/_deps/wil-subbuild

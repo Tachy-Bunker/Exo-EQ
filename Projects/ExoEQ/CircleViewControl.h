@@ -1,13 +1,18 @@
 #pragma once
 
 #include "IControl.h"
+#include "FreqFormat.h"
+#include "MorphSteps.h"
 #include "ExoEQ.h" // BandParamIdx, kMaxBands, EBandParamOffset, kMaxCircles
 #include "DSP/CircleChain.h"
+#include "DSP/FrequencyResponse.h" // measured complex response of the REAL band filter (see that header)
 #include <vector>
 #include <cmath>
 #include <algorithm>
 #include <functional>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 // CircleViewControl.h
 // UI ONLY -- not DSP, not unit-tested, and NOT verified against the real
@@ -82,23 +87,64 @@ public:
   // same action function, since this control has no way to reach into
   // the panel's own Hide() calls from here.
   void ClearSelection() { mSelectedBand = -1; SetDirty(false); }
+  // Persisted across a close/reopen of the editor: the plugin reads these in OnUIClose
+  // and writes them back into the new control in OnLayout.
+  int GetSelectedBand() const { return mSelectedBand; }
+  void RestoreSelection(int circle, int band)
+  {
+    mSelectedCircle = circle < 0 ? 0 : circle;
+    mSelectedBand = -1;
+    if (band >= 0) SelectBand(band); // same path a click uses, so the detail panel retargets too
+    SetDirty(false);
+  }
+
+  // FOUND THIS ROUND -- the actual cause of "nodes still mismatch where we
+  // click": Draw() sized the rail at 152px (widened a few rounds back for
+  // the larger text), but EVERY mouse-handling function below had been
+  // left at the OLD width, 88px, hardcoded separately at each call site.
+  // mainArea (and therefore GetArcGeom's cx/cy/r, and therefore every
+  // single Hz<->screen conversion) was 64px wider during a click than
+  // during the paint that drew the dot you thought you were clicking --
+  // a fixed, compounding offset, not the animation-lag issue fixed last
+  // round (that was real too, just not the dominant one). One shared
+  // constant now, so Draw() and every OnMouse*/FindBandNear/
+  // FindResonanceHandleNear call agree by construction -- this can't
+  // drift apart again the way two separately-typed literals did.
+  static constexpr float kRailW = 152.f;
+
+  // T4-1 load sweep. IGraphics calls IsDirty() once per display refresh, before it collects
+  // dirty rects, so advancing here makes the sweep run every frame until it finishes.
+  bool IsDirty() override
+  {
+    // T4-8: Low Motion skips the sweep entirely -- jump straight to the finished curve (one repaint).
+    if (mLoadProgress < 1.f && GetDelegate()->GetParam(kGlobalLowMotion)->Value() > 0.5)
+    {
+      mLoadProgress = 1.f;
+      return true;
+    }
+    if (mLoadProgress < 1.f)
+    {
+      mLoadProgress = std::min(1.f, mLoadProgress + 0.14f); // doubled step: same ~0.25 s sweep at 30 fps
+      return true;
+    }
+    return IControl::IsDirty();
+  }
 
   void Draw(IGraphics& g) override
   {
     using namespace iplug::igraphics;
-    g.FillRect(IColor(255, 21, 21, 26), mRECT);
+    g.FillRect(IColor(255, 10, 10, 12), mRECT); // conceptual-art pass: near-black
 
     // Split: rail docked on the right (per the rail-right round confirmed
     // earlier), everything else (depth stack + selected-circle gauge) in
     // the remaining area to its left.
-    const float railW = 70.f;
-    const IRECT railArea = mRECT.GetFromRight(railW);
+    const IRECT railArea = mRECT.GetFromRight(kRailW);
     // Built directly rather than via a "reduced by" helper (not confident
     // that exact helper name exists in the vendored IRECT -- GetFromRight/
     // GetFromLeft/GetPadded etc. above are the ones already proven to
     // compile elsewhere in this project's controls, so this one spot
     // avoids guessing at an unproven name).
-    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - railW, mRECT.B);
+    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
 
     const std::vector<CircleInfo> circles = GatherCircles();
     // FIXED THIS ROUND: this used to `return` here whenever `circles` was
@@ -117,13 +163,59 @@ public:
     // not gating the whole draw on its return value.
     EnsureSelectionValid(circles);
 
+    // T4-5: the grid, frequency labels and dB rings never change for a given size, so they are
+    // rendered once into an IGraphics layer and blitted each frame. CheckLayer() reports false
+    // after a resize or a DPI/scale change, which triggers a re-render.
+    if (!g.CheckLayer(mGridLayer))
+    {
+      g.StartLayer(this, mainArea, false);
+      DrawFrequencyGrid(g, mainArea);
+      DrawDbRings(g, mainArea);
+      mGridLayer = g.EndLayer();
+    }
+    g.DrawLayer(mGridLayer);
     DrawDepthStack(g, mainArea, circles);
     DrawScrim(g, mainArea, circles);
+    DrawResponseCurve(g, mainArea, mSelectedCircle);
+    // Ghosts fade out from 7 circles on: full at 7, a third less per extra circle, gone by 10.
+    mGhostFade = std::clamp((10.f - static_cast<float>(circles.size())) / 3.f, 0.f, 1.f);
+    // T3-1: ghost curves for up to 4 other circles (faint, dashed). Cap keeps weak machines responsive.
+    {
+      int shown = 0;
+      for (const auto& c : circles)
+      {
+        if (c.circleId == mSelectedCircle) continue;
+        if (shown++ >= 4) break;
+        DrawResponseCurve(g, mainArea, c.circleId, true);
+      }
+    }
     DrawSelectedGauge(g, mainArea, circles);
     DrawRail(g, railArea, circles);
+    // T2-8: global bypass dims the graph so the state is visible from anywhere in the view.
+    if (GetDelegate()->GetParam(kGlobalBypass)->Value() > 0.5)
+    {
+      g.FillRect(IColor(150, 10, 10, 12), mRECT);
+      // T2-8: the dry response is the flat 0 dB curve. Draw it dashed on top of the dim so the
+      // bypassed state reads as "this is what the signal is doing now", not just a faded graph.
+      const ArcGeom dryArc = GetArcGeom(mainArea);
+      const float dryR = RadiusForDb(dryArc.r, 0.0);
+      constexpr int kDashSteps = 48;
+      for (int i = 0; i < kDashSteps; i += 2)
+      {
+        const double t0 = static_cast<double>(i) / kDashSteps;
+        const double t1 = static_cast<double>(i + 1) / kDashSteps;
+        const double a0 = (180.0 + t0 * 180.0) * kPi / 180.0;
+        const double a1 = (180.0 + t1 * 180.0) * kPi / 180.0;
+        g.DrawLine(IColor(200, 200, 215, 240),
+                   dryArc.cx + dryR * static_cast<float>(std::cos(a0)), dryArc.cy + dryR * static_cast<float>(std::sin(a0)),
+                   dryArc.cx + dryR * static_cast<float>(std::cos(a1)), dryArc.cy + dryR * static_cast<float>(std::sin(a1)),
+                   nullptr, 1.2f);
+      }
+    }
     // NEW THIS ROUND: live crosshair + Hz readout -- another item off the
     // original deferred list. Drawn last so it sits on top of everything
     // else.
+    DrawArcHoverTick(g, mainArea);
     DrawCrosshair(g, mainArea);
     // NEW THIS ROUND: the tap-creates-a-band filter-type popover --
     // drawn last/on top of everything, same as the crosshair above.
@@ -133,6 +225,10 @@ public:
     // DrawPresetTray's own comments below for what each one does.
     DrawUndoRedo(g);
     DrawPresetTray(g);
+    DrawStatusLamps(g, mainArea);
+    // Concept 02 graph label, top-left of the radar.
+    g.DrawText(ScaledText(11.f, IColor(255, 130, 165, 200)), "SPECTRAL DEPTH", IRECT(mainArea.L + 16.f, mainArea.T + 44.f, mainArea.L + 260.f, mainArea.T + 60.f));
+    g.DrawText(ScaledText(10.f, IColor(255, 95, 110, 130)), "circle stack  |  signal flow  |  morph", IRECT(mainArea.L + 16.f, mainArea.T + 62.f, mainArea.L + 320.f, mainArea.T + 76.f));
   }
 
   // Tracks the cursor while it's over the gauge (hover OR an active
@@ -169,6 +265,24 @@ public:
 
   void OnMouseDown(float x, float y, const IMouseMod& mod) override
   {
+    mDraggingGain = false;
+    // Click the selected node's tag to type "freq [gain]" for that node. Checked
+    // first so it takes precedence over the node/drag hit-tests below.
+    if (mSelectedBand >= 0 && mSelectedTagShown && mSelectedTagRect.Contains(x, y))
+    {
+      // Left half of the tag edits frequency, right half edits gain. Each has its own
+      // text entry, so typing one value never changes the other.
+      const bool gainSide = x >= mSelectedTagRect.MW();
+      const double value = gainSide
+        ? GetDelegate()->GetParam(BandParamIdx(mSelectedBand, kBandGainDb))->Value()
+        : GetDelegate()->GetParam(BandParamIdx(mSelectedBand, kBandCutoff))->Value();
+      char cur[32];
+      std::snprintf(cur, sizeof(cur), "%.2f", value);
+      mNodeEntryBand = mSelectedBand;
+      mNodeEntryField = gainSide ? 1 : 0;
+      GetUI()->CreateTextEntry(*this, DEFAULT_TEXT, mSelectedTagRect, cur, kNoValIdx);
+      return;
+    }
     // NEW THIS ROUND: if the type-picker card is open (see OnMouseUp's
     // new mPendingPick* handling), THIS click resolves it -- either picks
     // a row (commits the pending band with that filter type) or lands
@@ -187,7 +301,7 @@ public:
         const PickerItem* pickerItems = PickerItems(pickerCount);
         if (row >= 0 && row < pickerCount)
         {
-          const IRECT mainAreaForPick(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
+          const IRECT mainAreaForPick(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
           // FIXED THIS ROUND: uses the tap's full (x,y) via the arc
           // mapping, not just X against a flat line.
           const double hz = HzFromArcPoint(mainAreaForPick, mPendingPickX, mPendingPickY);
@@ -265,7 +379,7 @@ public:
     // actually required a pre-existing circle.
     EnsureSelectionValid(circles);
 
-    const IRECT railArea = mRECT.GetFromRight(70.f);
+    const IRECT railArea = mRECT.GetFromRight(kRailW);
     if (railArea.Contains(x, y))
     {
       // NEW THIS ROUND: rail press no longer selects immediately -- it
@@ -280,10 +394,11 @@ public:
       mRailDragTotalMovePx = 0.f;
       mRailDragLastDeltaY = 0.f;
       mDraggingNewBand = false;
+      mDraggingResonanceHandle = false;
       return;
     }
 
-    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
+    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
     const IRECT gaugeArea = GaugeArea(mainArea);
     if (!gaugeArea.Contains(x, y)) return;
 
@@ -294,6 +409,25 @@ public:
     // band and returned, with no way to move or delete a band already on
     // the graph at all once created (only the detail panel's own knobs
     // could touch it). Empty space is still what creates a brand new band.
+    // NEW -- right-drag on a node = vertical gain (no extra handle). Up boosts,
+    // down cuts, Shift = fine. Frequency and resonance stay on left-drag.
+    if (mod.R)
+    {
+      const int gainBand = FindBandNear(mainArea, x, y);
+      if (gainBand >= 0)
+      {
+        SelectBand(gainBand);
+        mDraggingGain = true;
+        mDraggedBand = gainBand;
+        mGainDragStartY = y;
+        mGainDragStartDb = GetDelegate()->GetParam(BandParamIdx(gainBand, kBandGainDb))->Value();
+        PushUndoSnapshot();
+        GetDelegate()->BeginInformHostOfParamChangeFromUI(BandParamIdx(gainBand, kBandGainDb));
+        SetDirty(false);
+        return;
+      }
+    }
+
     const int hitBand = FindBandNear(mainArea, x, y);
     if (hitBand >= 0)
     {
@@ -303,6 +437,22 @@ public:
       // can't-verify-against-your-exact-headers caveat as every other
       // UI/SDK-signature note in this project; paste the error if this
       // specific field name doesn't compile).
+      if (mod.A)
+      {
+        // Alt-click: move this band to the next circle (wraps around) and follow it,
+        // so the node stays in view. Same membership param the rest of the view uses.
+        PushUndoSnapshot();
+        const int cur = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(hitBand, kBandCircleIndex))->Value());
+        const int next = (cur + 1) % exoeq::kMaxCircles;
+        PushParamValue(BandParamIdx(hitBand, kBandCircleIndex), static_cast<double>(next), 0.0, static_cast<double>(exoeq::kMaxCircles - 1));
+        mSelectedCircle = next;
+        SelectBand(hitBand);
+        mDraggingNewBand = false;
+        mDraggingExistingBand = false;
+        mDraggingResonanceHandle = false;
+        SetDirty(false);
+        return;
+      }
       if (mod.S)
       {
         PushUndoSnapshot();
@@ -311,12 +461,14 @@ public:
         SelectBand(hitBand);
         mDraggingNewBand = false;
         mDraggingExistingBand = false;
+        mDraggingResonanceHandle = false;
         SetDirty(false);
         return;
       }
       SelectBand(hitBand);
       mDraggingNewBand = false;
       mDraggingExistingBand = true;
+      mDraggingResonanceHandle = false;
       mDraggedBand = hitBand;
       // Snapshot once, at the START of the drag, not on every move --
       // one Undo() press should undo the WHOLE retune back to before you
@@ -342,10 +494,71 @@ public:
       return;
     }
 
+    // NEW -- the resonance/width handle (the "second point" on a wide-
+    // type band's dotted center line) checked only once the band's own
+    // dot misses, same priority split hit-testing everywhere else in
+    // this file already uses for a smaller secondary target.
+    const int hitHandle = FindResonanceHandleNear(mainArea, x, y);
+    if (hitHandle >= 0)
+    {
+      SelectBand(hitHandle);
+      mDraggingNewBand = false;
+      mDraggingExistingBand = false;
+      mDraggingResonanceHandle = true;
+      mDraggedBand = hitHandle;
+      PushUndoSnapshot();
+      GetDelegate()->BeginInformHostOfParamChangeFromUI(BandParamIdx(hitHandle, kBandResonance));
+      SetDirty(false);
+      return;
+    }
+
+    // Circle outlines are selectable targets too. Previously only the tiny
+    // rail row changed mSelectedCircle, so clicking a visible depth arc
+    // appeared to do nothing. Band dots remain higher priority because the
+    // band hit-test above runs first.
+    if (!circles.empty())
+    {
+      const ArcGeom arc = GetArcGeom(mainArea);
+      int selectedPos = 0;
+      for (size_t i = 0; i < circles.size(); ++i)
+        if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
+      const float dx = x - arc.cx;
+      const float dy = std::min(0.f, y - arc.cy);
+      const float distance = std::sqrt(dx * dx + dy * dy);
+      double angle = std::atan2(static_cast<double>(dy), static_cast<double>(dx)) * 180.0 / kPi;
+      if (angle <= 0.0) angle += 360.0;
+      int nearestCircle = -1;
+      float nearestDistance = 16.f;
+      if (angle >= 180.0 && angle <= 360.0)
+      {
+        for (size_t i = 0; i < circles.size(); ++i)
+        {
+          const int rank = std::abs(static_cast<int>(i) - selectedPos);
+          const float radius = arc.r * std::max(0.55f, 1.0f - rank * 0.08f);
+          const float ringDistance = std::abs(distance - radius);
+          if (ringDistance < nearestDistance)
+          {
+            nearestDistance = ringDistance;
+            nearestCircle = circles[i].circleId;
+          }
+        }
+      }
+      if (nearestCircle >= 0 && nearestCircle != mSelectedCircle)
+      {
+        mSelectedCircle = nearestCircle;
+        mRailScrollOffset = 0;
+        mSelectedBand = -1;
+        if (mOnBandSelected) mOnBandSelected(-1);
+        SetDirty(false);
+        return;
+      }
+    }
+
     mDragStartX = x;
     mDragStartY = y;
     mDraggingNewBand = true;
     mDraggingExistingBand = false;
+    mDraggingResonanceHandle = false;
     mDragIsRange = false; // becomes true once the drag moves far enough (see OnMouseDrag)
   }
 
@@ -379,7 +592,7 @@ public:
       // handler in this codebase already receives, just unused until
       // now), which doubles as this gesture's velocity signal for the
       // flick-to-keep-scrolling check in OnMouseUp below.
-      const IRECT railArea = mRECT.GetFromRight(70.f);
+      const IRECT railArea = mRECT.GetFromRight(kRailW);
       // Literal 8, not a shared named constant -- matches the existing
       // local `kMaxVisibleRows = 8` already duplicated independently in
       // DrawRail/RailRowAt/ClampRailScrollOffset (pre-dating this round);
@@ -390,6 +603,41 @@ public:
       mRailDragLastDeltaY = dY;
       while (mRailDragTotalMovePx >= rowH) { mRailScrollOffset -= 1; mRailDragTotalMovePx -= rowH; }
       while (mRailDragTotalMovePx <= -rowH) { mRailScrollOffset += 1; mRailDragTotalMovePx += rowH; }
+      SetDirty(false);
+      return;
+    }
+    if (mDraggingGain)
+    {
+      // 0.12 dB per px vertical; Shift drops to 0.02 dB/px for fine trim.
+      constexpr double kGainDbPerPx = 0.12, kGainDbPerPxFine = 0.02;
+      const double perPx = mod.S ? kGainDbPerPxFine : kGainDbPerPx;
+      const double targetDb = mGainDragStartDb + (mGainDragStartY - y) * perPx;
+      PushParamValue(BandParamIdx(mDraggedBand, kBandGainDb), std::clamp(targetDb, -24.0, 24.0), -24.0, 24.0);
+      SetDirty(false);
+      return;
+    }
+    if (mDraggingResonanceHandle)
+    {
+      // Radial drag: the band's own angle (its cutoff/frequency) never
+      // changes here, only the distance from the arc's center -- same
+      // geometry ResonanceHandleRadius/FindResonanceHandleNear already
+      // use, just solved in reverse (distance -> resonance).
+      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
+      const ArcGeom arc = GetArcGeom(mainArea);
+      const std::vector<CircleInfo> circles = GatherCircles();
+      int selectedPos = 0;
+      for (size_t i = 0; i < circles.size(); ++i) if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
+      const int circleId = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(mDraggedBand, kBandCircleIndex))->Value());
+      int circlePos = selectedPos;
+      for (size_t i = 0; i < circles.size(); ++i) if (circles[i].circleId == circleId) circlePos = static_cast<int>(i);
+      const float ringRadius = arc.r * std::max(0.55f, 1.0f - std::abs(circlePos - selectedPos) * 0.08f);
+      const double dx = static_cast<double>(x - arc.cx);
+      const double dy = std::min(0.0, static_cast<double>(y - arc.cy));
+      const float dist = static_cast<float>(std::sqrt(dx * dx + dy * dy));
+      const float denom = std::max(1.f, ringRadius * (kResHandleOuterFrac - kResHandleInnerFrac));
+      const float t = std::clamp((dist - ringRadius * kResHandleInnerFrac) / denom, 0.f, 1.f);
+      const double resonance = UnitToResonance(t);
+      PushParamValue(BandParamIdx(mDraggedBand, kBandResonance), resonance, 0.05, 20.0);
       SetDirty(false);
       return;
     }
@@ -405,7 +653,7 @@ public:
       // ANGLE around the arc's own center (HzFromArcPoint), not via X
       // against a flat line -- this keeps the dragged dot riding the
       // actual curve.
-      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
+      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
       const double targetHz = HzFromArcPoint(mainArea, x, y);
       // NEW THIS ROUND -- fine-tune retune: hold Shift while dragging an
       // existing band and it follows the cursor's TARGET position slowly
@@ -456,8 +704,8 @@ public:
       if (presetIndex < 0 || presetIndex >= presetCount) { SetDirty(false); return; }
       const PresetCircleDef preset = GetPresetAt(presetIndex);
 
-      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
-      const IRECT railArea = mRECT.GetFromRight(70.f);
+      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
+      const IRECT railArea = mRECT.GetFromRight(kRailW);
       const ArcGeom arc = GetArcGeom(mainArea);
       const std::vector<CircleInfo> circles = GatherCircles();
 
@@ -493,7 +741,7 @@ public:
       constexpr float kTapMovePxThreshold = 6.f; // barely-moved press+release still counts as a tap-to-select
       if (std::abs(mRailDragTotalMovePx) < kTapMovePxThreshold && std::abs(y - mRailDragStartY) < kTapMovePxThreshold)
       {
-        const IRECT railArea = mRECT.GetFromRight(70.f);
+        const IRECT railArea = mRECT.GetFromRight(kRailW);
         const std::vector<CircleInfo> circles = GatherCircles();
         const int hitCircle = RailRowAt(railArea, circles, y);
         if (hitCircle >= 0 && hitCircle != mSelectedCircle)
@@ -515,6 +763,27 @@ public:
           // lives in exactly one place either way.
           mSelectedBand = -1;
           if (mOnBandSelected) mOnBandSelected(-1);
+        }
+        else if (hitCircle < 0)
+        {
+          // Empty rail space is an explicit create-circle gesture when no
+          // band is selected. This gives the user a discoverable way to
+          // start a new depth layer without guessing how to manufacture a
+          // circle from the arc. The new circle starts with one neutral Bell
+          // band at 1 kHz and is selected immediately.
+          const int freeCircle = FirstFreeCircleId(circles);
+          const int freeBand = FirstInactiveBandSlot();
+          if (freeCircle >= 0 && freeBand >= 0)
+          {
+            PushUndoSnapshot();
+            PushParamValue(BandParamIdx(freeBand, kBandCutoff), 1000.0, 20.0, 20000.0);
+            PushParamValue(BandParamIdx(freeBand, kBandResonance), 0.707, 0.05, 20.0);
+            PushParamValue(BandParamIdx(freeBand, kBandFilterType), 0.0, 0.0, static_cast<double>(kNumFilterTypeOptions - 1));
+            PushParamValue(BandParamIdx(freeBand, kBandCircleIndex), static_cast<double>(freeCircle), 0.0, static_cast<double>(exoeq::kMaxCircles - 1));
+            PushParamValue(BandParamIdx(freeBand, kBandActive), 1.0, 0.0, 1.0);
+            mSelectedCircle = freeCircle;
+            SelectBand(freeBand);
+          }
         }
         SetDirty(false);
         return;
@@ -545,6 +814,20 @@ public:
       }
       return;
     }
+    if (mDraggingGain)
+    {
+      GetDelegate()->EndInformHostOfParamChangeFromUI(BandParamIdx(mDraggedBand, kBandGainDb));
+      mDraggingGain = false;
+      (void)x; (void)y;
+      return;
+    }
+    if (mDraggingResonanceHandle)
+    {
+      GetDelegate()->EndInformHostOfParamChangeFromUI(BandParamIdx(mDraggedBand, kBandResonance));
+      mDraggingResonanceHandle = false;
+      (void)x; (void)y;
+      return;
+    }
     if (mDraggingExistingBand)
     {
       // Closes the Begin/EndInformHostOfParamChangeFromUI bracket opened
@@ -559,7 +842,7 @@ public:
     if (!mDraggingNewBand) return;
     mDraggingNewBand = false;
 
-    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
+    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
 
     const int freeBand = FirstInactiveBandSlot();
     if (freeBand < 0) return; // every one of kMaxBands slots already in use
@@ -626,10 +909,10 @@ public:
       return;
     }
 
-    // A plain TAP (not a drag -- see mDragIsRange's gesture-direction
-    // branch above for drags) opens a small filter-type popover card
-    // right at the tap point instead of force-creating a fixed type: a
-    // short list, click a row to commit, click anywhere else to cancel.
+    // A plain tap creates a neutral Bell immediately. This is the fast path
+    // used by professional EQs: click, then drag the node. Filter choice is
+    // still available through the directional gesture and the selected
+    // band's Type control.
     // Drawn/hit-tested with this
     // file's own existing FillRect/DrawText/Contains primitives rather
     // than IGraphics' native popup-menu API (CreatePopupMenu/
@@ -639,9 +922,14 @@ public:
     // be 3 more of those at once. Nothing is created yet -- the actual
     // PushParamValue calls happen in OnMouseDown below once a row (or
     // nothing) is picked.
-    mPendingPickX = x;
-    mPendingPickY = y;
-    mPendingPickBand = freeBand;
+    PushUndoSnapshot();
+    PushParamValue(BandParamIdx(freeBand, kBandCutoff), std::clamp(cutoffHz, 20.0, 20000.0), 20.0, 20000.0);
+    PushParamValue(BandParamIdx(freeBand, kBandResonance), 0.707, 0.05, 20.0);
+    PushParamValue(BandParamIdx(freeBand, kBandFilterType), 0.0, 0.0, static_cast<double>(kNumFilterTypeOptions - 1));
+    PushParamValue(BandParamIdx(freeBand, kBandMorph), 50.0, 0.0, 100.0);
+    PushParamValue(BandParamIdx(freeBand, kBandCircleIndex), static_cast<double>(mSelectedCircle), 0.0, static_cast<double>(exoeq::kMaxCircles - 1));
+    PushParamValue(BandParamIdx(freeBand, kBandActive), 1.0, 0.0, 1.0);
+    SelectBand(freeBand);
     SetDirty(false);
   }
 
@@ -657,7 +945,7 @@ public:
   // existing band" vs "empty space".
   void OnMouseDblClick(float x, float y, const IMouseMod& /*mod*/) override
   {
-    const IRECT railArea = mRECT.GetFromRight(70.f);
+    const IRECT railArea = mRECT.GetFromRight(kRailW);
     if (railArea.Contains(x, y))
     {
       // NEW THIS ROUND: double-click a rail row to delete that WHOLE
@@ -685,7 +973,7 @@ public:
       return;
     }
 
-    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
+    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
     const IRECT gaugeArea = GaugeArea(mainArea);
     if (!gaugeArea.Contains(x, y)) return;
 
@@ -729,7 +1017,7 @@ public:
   // lines that need to change.
   static constexpr int kBellOrdinal = 0; // Morph (LP-BP-HP), forced to its BP midpoint
   static constexpr int kBandPass12Ordinal = 9; // "Bandpass 12" per ExoEQ.cpp's current InitEnum list
-  static constexpr int kNumFilterTypeOptions = 46; // length of that same InitEnum list (counted from ExoEQ.cpp directly) -- update together if it changes
+  static constexpr int kNumFilterTypeOptions = 45; // length of that same InitEnum list (counted from ExoEQ.cpp directly) -- update together if it changes
 
   // NEW THIS ROUND -- the tap-creates-a-popover-card item list (see
   // OnMouseUp/DrawTypePicker/OnMouseDown's new mPendingPick* handling).
@@ -759,8 +1047,11 @@ public:
     countOut = static_cast<int>(sizeof(kItems) / sizeof(kItems[0]));
     return kItems;
   }
-  static constexpr float kPickerRowH = 26.f;
-  static constexpr float kPickerW = 130.f;
+  // Large, high-contrast quick picker: this is the first decision a user
+  // makes after creating a node, so it should read like a deliberate tool
+  // palette rather than a tiny default menu.
+  static constexpr float kPickerRowH = 32.f;
+  static constexpr float kPickerW = 188.f;
 
   // NEW THIS ROUND -- the preset-circle library/tray, per your spec:
   // "a sort of library on the left which pops up when you hover over it,
@@ -908,7 +1199,7 @@ public:
       for (int i = 0; i < kLetterCount; ++i)
       {
         const IRECT letterRect(mRECT.L, edgeTab.T + i * letterH, mRECT.L + 16.f, edgeTab.T + (i + 1) * letterH);
-        g.DrawText(IText(9.f, IColor(190, 217, 164, 76)), kLetters[i], letterRect);
+        g.DrawText(ScaledText(9.f, IColor(190, 217, 164, 76)), kLetters[i], letterRect);
       }
     }
 
@@ -926,9 +1217,13 @@ public:
       {
         const PresetCircleDef preset = GetPresetAt(i);
         const IRECT rowRect(trayRect.L, trayRect.T + i * kPresetRowH, trayRect.R, trayRect.T + (i + 1) * kPresetRowH);
+        // NEW -- cosmetic hover brighten, same signal as every other
+        // clickable/draggable row in this file.
+        if (mHoverValid && rowRect.Contains(mHoverX, mHoverY))
+          g.FillRect(IColor(60, 217, 164, 76), rowRect);
         const IRECT nameRect(rowRect.L, rowRect.T, rowRect.R, rowRect.T + 20.f);
         const IRECT previewRect(rowRect.L, rowRect.T + 20.f, rowRect.R, rowRect.B);
-        g.DrawText(IText(11.f, COLOR_WHITE), preset.name, nameRect.GetPadded(-6.f));
+        g.DrawText(ScaledText(11.f, COLOR_WHITE), preset.name, nameRect.GetPadded(-6.f));
         // A one-line preview under each preset's name (its first band's
         // own type + Hz), so you can tell what you're about to drop
         // without already knowing the names by heart. Only the FIRST
@@ -944,11 +1239,10 @@ public:
           else if (pb.ordinal == 9) typeName = "BP12";
           else if (pb.ordinal == 11) typeName = "Notch12";
           char buf[48];
-          if (pb.cutoffHz >= 1000.0)
-            std::snprintf(buf, sizeof(buf), "%s @ %.1fkHz", typeName, pb.cutoffHz / 1000.0);
-          else
-            std::snprintf(buf, sizeof(buf), "%s @ %.0fHz", typeName, pb.cutoffHz);
-          g.DrawText(IText(9.f, COLOR_GRAY), buf, previewRect.GetPadded(-6.f));
+          char hzText[24];
+          FormatHzReadout(pb.cutoffHz, hzText, sizeof(hzText));
+          std::snprintf(buf, sizeof(buf), "%s @ %s", typeName, hzText);
+          g.DrawText(ScaledText(9.f, COLOR_GRAY), buf, previewRect.GetPadded(-6.f));
         }
       }
 
@@ -959,7 +1253,9 @@ public:
       // bands (up to 3) as a new entry at the end of this same list.
       {
         const IRECT saveRowRect(trayRect.L, trayRect.T + presetCount * kPresetRowH, trayRect.R, trayRect.T + (presetCount + 1) * kPresetRowH);
-        g.DrawText(IText(11.f, IColor(255, 217, 164, 76)), "+ Save Current", saveRowRect.GetPadded(-6.f));
+        if (mHoverValid && saveRowRect.Contains(mHoverX, mHoverY))
+          g.FillRect(IColor(60, 217, 164, 76), saveRowRect);
+        g.DrawText(ScaledText(11.f, IColor(255, 217, 164, 76)), "+ Save Current", saveRowRect.GetPadded(-6.f));
       }
     }
 
@@ -973,7 +1269,7 @@ public:
       if (mDraggedPresetIndex < presetCount)
       {
         const PresetCircleDef preset = GetPresetAt(mDraggedPresetIndex);
-        g.DrawText(IText(11.f, COLOR_WHITE), preset.name, IRECT(mPresetDragX + 8.f, mPresetDragY - 8.f, mPresetDragX + 140.f, mPresetDragY + 8.f));
+        g.DrawText(ScaledText(11.f, COLOR_WHITE), preset.name, IRECT(mPresetDragX + 8.f, mPresetDragY - 8.f, mPresetDragX + 140.f, mPresetDragY + 8.f));
       }
     }
 
@@ -984,15 +1280,15 @@ public:
     // purely visual, it doesn't change what actually happens on release.
     if (mDraggingPreset)
     {
-      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
-      const IRECT railArea = mRECT.GetFromRight(70.f);
+      const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
+      const IRECT railArea = mRECT.GetFromRight(kRailW);
       const ArcGeom arc = GetArcGeom(mainArea);
       constexpr float kDeadCenterRadiusPx = 42.f; // same radius OnMouseUp's own drop resolution uses
       const float distFromCenter = std::sqrt((mPresetDragX - arc.cx) * (mPresetDragX - arc.cx) + (mPresetDragY - arc.cy) * (mPresetDragY - arc.cy));
       if (distFromCenter <= kDeadCenterRadiusPx)
       {
         // REPLACE -- ring around the whole selected-circle arc.
-        g.DrawArc(IColor(220, 217, 76, 76), arc.cx, arc.cy, arc.r, 180.f, 360.f, nullptr, 4.f);
+        DrawHemiArc(g, IColor(220, 217, 76, 76), arc.cx, arc.cy, arc.r, 4.f);
       }
       else if (railArea.Contains(mPresetDragX, mPresetDragY))
       {
@@ -1007,7 +1303,7 @@ public:
       else
       {
         // ADD NEW -- a small "+" marker right at the drop point.
-        g.DrawText(IText(16.f, IColor(220, 217, 164, 76)), "+", IRECT(mPresetDragX - 10.f, mPresetDragY - 10.f, mPresetDragX + 10.f, mPresetDragY + 10.f));
+        g.DrawText(ScaledText(16.f, IColor(220, 217, 164, 76)), "+", IRECT(mPresetDragX - 10.f, mPresetDragY - 10.f, mPresetDragX + 10.f, mPresetDragY + 10.f));
       }
     }
   }
@@ -1076,6 +1372,20 @@ public:
         if (shifted != targetId)
           PushParamValue(BandParamIdx(b, kBandCircleIndex), static_cast<double>(shifted), 0.0, static_cast<double>(exoeq::kMaxCircles - 1));
       }
+    }
+  }
+
+  void SwapCircleOrder(int firstId, int secondId)
+  {
+    if (firstId == secondId) return;
+    for (int b = 0; b < kMaxBands; ++b)
+    {
+      if (GetDelegate()->GetParam(BandParamIdx(b, kBandActive))->Value() <= 0.5) continue;
+      const int circleId = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandCircleIndex))->Value());
+      if (circleId == firstId)
+        PushParamValue(BandParamIdx(b, kBandCircleIndex), static_cast<double>(secondId), 0.0, static_cast<double>(exoeq::kMaxCircles - 1));
+      else if (circleId == secondId)
+        PushParamValue(BandParamIdx(b, kBandCircleIndex), static_cast<double>(firstId), 0.0, static_cast<double>(exoeq::kMaxCircles - 1));
     }
   }
 
@@ -1159,10 +1469,16 @@ public:
     const IColor inactiveBg(90, 40, 40, 44);
     const IColor activeText = COLOR_WHITE;
     const IColor inactiveText = COLOR_GRAY;
-    g.FillRect(mUndoStack.empty() ? inactiveBg : activeBg, undoRect);
-    g.FillRect(mRedoStack.empty() ? inactiveBg : activeBg, redoRect);
-    g.DrawText(IText(11.f, mUndoStack.empty() ? inactiveText : activeText), "UNDO", undoRect);
-    g.DrawText(IText(11.f, mRedoStack.empty() ? inactiveText : activeText), "REDO", redoRect);
+    // NEW -- brighten on hover, but only when the button is actually
+    // clickable (an empty stack stays dim/inert so hovering it doesn't
+    // falsely promise an action nothing will happen on).
+    const bool undoHover = mHoverValid && !mUndoStack.empty() && undoRect.Contains(mHoverX, mHoverY);
+    const bool redoHover = mHoverValid && !mRedoStack.empty() && redoRect.Contains(mHoverX, mHoverY);
+    const IColor hoverBg(220, 100, 100, 112);
+    g.FillRect(mUndoStack.empty() ? inactiveBg : (undoHover ? hoverBg : activeBg), undoRect);
+    g.FillRect(mRedoStack.empty() ? inactiveBg : (redoHover ? hoverBg : activeBg), redoRect);
+    g.DrawText(ScaledText(11.f, mUndoStack.empty() ? inactiveText : activeText), "UNDO", undoRect);
+    g.DrawText(ScaledText(11.f, mRedoStack.empty() ? inactiveText : activeText), "REDO", redoRect);
   }
 
   struct CircleInfo { int circleId; double avgHz; int bandCount; };
@@ -1249,6 +1565,26 @@ public:
   // circle's OWN average frequency (one flat color for the whole circle,
   // NOT a per-band/per-position gradient -- the correction the user made
   // after the first version of this got it wrong).
+  // Fixed per-circle palette (see the palette table in the README). Index = circleId % 8.
+  // Ghost = bg(10,10,12) + 0.35*(color - bg): same hue, dimmed, so ghosted nodes stay tied to their circle.
+  static iplug::igraphics::IColor CircleColorFor(int circleId, bool ghost)
+  {
+    using iplug::igraphics::IColor;
+    struct Pal { int r, g, b, gr, gg, gb; };
+    static const Pal kPal[8] = {
+      { 255, 107,  74,  96,  44,  34 }, // 0 coral
+      {  47, 209, 181,  23,  80,  71 }, // 1 teal
+      { 255, 178,  63,  96,  69,  30 }, // 2 amber
+      {  91, 108, 255,  38,  44,  97 }, // 3 indigo
+      { 182, 224,  60,  70,  85,  29 }, // 4 lime
+      { 224,  69, 123,  85,  31,  51 }, // 5 rose
+      {  79, 184, 240,  34,  71,  92 }, // 6 sky
+      { 178, 107, 214,  69,  44,  83 }, // 7 plum
+    };
+    const Pal& p = kPal[((circleId % 8) + 8) % 8];
+    return ghost ? IColor(255, p.gr, p.gg, p.gb) : IColor(255, p.r, p.g, p.b);
+  }
+
   iplug::igraphics::IColor CircleHueColor(double avgHz) const
   {
     using namespace iplug::igraphics;
@@ -1279,7 +1615,326 @@ public:
   // of that circle's own hue or the band's own frequency -- per the
   // user's correction: bands are a complementary color, not individually
   // tinted by position.
-  iplug::igraphics::IColor AccentColor() const { return iplug::igraphics::IColor(255, 217, 164, 76); }
+  iplug::igraphics::IColor AccentColor() const { return iplug::igraphics::IColor(255, 232, 236, 242); }
+
+  // Conceptual-art palette: blue-gray for structure, white for nodes,
+  // restrained blue-gray glow for active states.
+  // Hemicircle (180..360 degrees) as a polyline of DrawLine segments, 3 degrees
+  // per step. Replaces g.DrawArc, which in the user's build only drew from
+  // 180 to 270 degrees (arcs ended flat at the vertical center line).
+  static void DrawHemiArc(IGraphics& g, const iplug::igraphics::IColor& color, float cx, float cy, float r, float thickness)
+  {
+    constexpr int kSteps = 60;
+    float px = cx - r, py = cy;
+    for (int i = 1; i <= kSteps; ++i)
+    {
+      const double a = (180.0 + 180.0 * i / kSteps) * kPi / 180.0;
+      const float nx = cx + r * static_cast<float>(std::cos(a));
+      const float ny = cy + r * static_cast<float>(std::sin(a));
+      g.DrawLine(color, px, py, nx, ny, nullptr, thickness);
+      px = nx;
+      py = ny;
+    }
+  }
+
+  // NEW -- same polyline technique as DrawHemiArc above, but for an
+  // arbitrary [angleLoDeg, angleHiDeg] sub-span rather than the whole
+  // 180..360 hemicircle. This is the visible connecting line for a
+  // two-band circle's draggable segment (DrawSelectedGauge below draws
+  // it, FindBandNear's widened hit-test matches its geometry exactly).
+  static void DrawArcSpan(IGraphics& g, const iplug::igraphics::IColor& color, float cx, float cy, float r, double angleLoDeg, double angleHiDeg, float thickness)
+  {
+    const double span = std::max(0.0, angleHiDeg - angleLoDeg);
+    const int steps = std::max(1, static_cast<int>(span / 3.0));
+    const double a0 = angleLoDeg * kPi / 180.0;
+    float px = cx + r * static_cast<float>(std::cos(a0));
+    float py = cy + r * static_cast<float>(std::sin(a0));
+    for (int i = 1; i <= steps; ++i)
+    {
+      const double a = (angleLoDeg + span * i / steps) * kPi / 180.0;
+      const float nx = cx + r * static_cast<float>(std::cos(a));
+      const float ny = cy + r * static_cast<float>(std::sin(a));
+      g.DrawLine(color, px, py, nx, ny, nullptr, thickness);
+      px = nx;
+      py = ny;
+    }
+  }
+
+  // Text multiplier. Left at 1.0 on purpose: ExoEQ's layout already attaches
+  // AttachCornerResizer(EUIResizerMode::Scale), so iPlug2 scales all drawing,
+  // text included, with the window. A second multiplier on top of that caused
+  // the overlap/wrap seen in the 4x test. Only change this if text needs to
+  // scale differently from the window.
+  static constexpr float kUiTextScale = 1.5f; // matched to Pro-Q's label size; every box below was widened to suit
+  static iplug::igraphics::IText ScaledText(float size, iplug::igraphics::IColor color)
+  {
+    return iplug::igraphics::IText(size * kUiTextScale, color);
+  }
+
+  // ---- Pro-Q-style readability layer -------------------------------------
+  // Three things the FabFilter comparison made obvious that this graph simply
+  // did not have: a labelled frequency grid, dB reference rings, and the actual
+  // EQ response curve. Without them the arc shows WHERE bands sit but nothing
+  // about WHAT they do, and there is no reference between 20Hz and 20kHz.
+
+  static constexpr float kDbRange = 18.f;   // radial span mapped either side of the 0 dB arc
+  static constexpr float kDbSpanFrac = 0.17f; // that range as a fraction of the base radius
+
+  // dB -> radius. 0 dB sits exactly on the base arc; boost pushes outward.
+  // FIXED THIS ROUND -- "after adding a lot of bands there's a limit on
+  // the curve, some added bands look like they do nothing": this used to
+  // be a HARD clamp at +/-kDbRange. Stack enough bands at/near the same
+  // spot and their summed response (ResponseDbAt sums every band's own
+  // BandResponseDb) blows past that well before you've run out of bands
+  // to add -- once it's pinned at the limit, every FURTHER band really
+  // does draw as doing nothing, because the curve is already dead flat
+  // there; it's a rendering ceiling, not the DSP actually doing nothing.
+  // tanh is a soft-knee instead: near 0 dB it's close to linear (tanh's
+  // own slope at the origin is 1, so ordinary, modest filters read
+  // exactly as before), and it asymptotes toward the SAME +/-kDbRange
+  // bound further out -- so the curve still can't run off the graph with
+  // a "super high" value -- but it never actually FLATTENS: every extra
+  // band stacked on top still nudges it some amount, just a shrinking
+  // amount the further out you already are, instead of zero.
+  float RadiusForDb(float baseRadius, double db) const
+  {
+    const double compressed = static_cast<double>(kDbRange) * std::tanh(db / static_cast<double>(kDbRange));
+    return baseRadius + static_cast<float>(compressed / kDbRange) * baseRadius * kDbSpanFrac;
+  }
+
+  // Approximate magnitude response of ONE band, in dB, at normalised position t.
+  // This is a DISPLAY approximation driven by the band's own cutoff/Q/gain/type
+  // ordinal -- it is not the DSP's own transfer function, so it shows the shape
+  // and direction of a filter, not a measured curve. Swapping this for the real
+  // per-type magnitude response is the obvious follow-up.
+  double BandResponseDb(int ordinal, double cutoffHz, double q, double gainDb, double t)
+  {
+    const double f = TToHz(t);
+    if (f <= 0.0 || cutoffHz <= 0.0) return 0.0;
+    const double x = std::log2(f / cutoffHz);          // octaves from cutoff
+    const double width = std::max(0.25, 1.0 / std::max(0.2, q)); // octaves
+    const double bump = std::exp(-(x / width) * (x / width));
+
+    // Families follow ExoEQ.cpp's InitEnum ordering.
+    if (ordinal >= 1 && ordinal <= 4)                  // Lowpass 6/12/24/48
+    {
+      const double slope[4] = { 6.0, 12.0, 24.0, 48.0 };
+      return -slope[ordinal - 1] * std::max(0.0, x) + (q > 0.8 ? 6.0 * bump : 0.0);
+    }
+    if (ordinal >= 5 && ordinal <= 8)                  // Highpass 6/12/24/48
+    {
+      const double slope[4] = { 6.0, 12.0, 24.0, 48.0 };
+      return -slope[ordinal - 5] * std::max(0.0, -x) + (q > 0.8 ? 6.0 * bump : 0.0);
+    }
+    if (ordinal == 9 || ordinal == 10)                 // Bandpass 12/24
+      return -(ordinal == 9 ? 12.0 : 24.0) * std::abs(x);
+    if (ordinal == 11)                                 // Notch 12
+      return -36.0 * bump;
+    // Morph (0) and everything experimental: read as a peaking/bell trim.
+    return gainDb * bump;
+  }
+
+  // One contributing band, already read out of the param system.
+  // One active band, as the response curve needs it: the exact FilterParams the
+  // audio chain builds (ReadBandSettings in ExoEQ.cpp, mirrored here), the band's
+  // linear gain, and its slot so the cached table can be found.
+  struct ResponseBand { exoeq::FilterParams filter; double gainLinear; int slot; };
+
+  // Per-band cache of the measured complex response. Rebuilt only when that
+  // band's filter params or the sample rate change. Gain is NOT in the key: it
+  // is applied outside the table, so gain drags cost nothing.
+  // While a retune drag is in progress a coarse grid is used, so each mouse
+  // event stays cheap; the full grid is rebuilt once on release.
+  static constexpr int kCurvePointsFull = 96;
+  static constexpr int kCurvePointsDrag = 32;
+  static constexpr double kCurveFMin = 20.0, kCurveFMax = 20000.0;
+  struct BandResponseCache
+  {
+    bool valid = false;
+    exoeq::FilterParams key{};
+    double sampleRate = 0.0;
+    int points = 0;
+    std::vector<double> freqs;
+    std::vector<std::complex<double>> h;
+  };
+  BandResponseCache mBandCache[kMaxBands];
+
+  bool IsRetuneDragging() const { return mDraggingExistingBand || mDraggingResonanceHandle || mDraggingGain; }
+
+  static bool SameFilterParams(const exoeq::FilterParams& a, const exoeq::FilterParams& b)
+  {
+    return a.cutoffHz == b.cutoffHz && a.resonance == b.resonance && a.morph == b.morph
+        && a.type == b.type && a.extra == b.extra;
+  }
+
+  // Makes sure slot `b` has a table that matches its current params.
+  void EnsureBandCache(int b, const exoeq::FilterParams& fp)
+  {
+    BandResponseCache& c = mBandCache[b];
+    const int wantPoints = IsRetuneDragging() ? kCurvePointsDrag : kCurvePointsFull;
+    if (c.valid && c.points == wantPoints && c.sampleRate == mSampleRate && SameFilterParams(c.key, fp))
+      return;
+    c.freqs = exoeq::MakeLogFreqGrid(kCurveFMin, kCurveFMax, wantPoints);
+    exoeq::BuildResponseTable(fp, mSampleRate, c.freqs, c.h);
+    c.key = fp;
+    c.sampleRate = mSampleRate;
+    c.points = wantPoints;
+    c.valid = true;
+  }
+
+  // PERFORMANCE / SAFETY. This used to read every param for all 256 band slots
+  // on EVERY curve sample. DrawResponseCurve takes 140 samples and the crosshair
+  // called it again, so a single repaint did roughly 36,000 GetParam() calls --
+  // while the host is pushing param changes from its own thread during a knob
+  // drag. That is both far too slow for a weak machine and the most likely
+  // trigger for the FL access violation. Now the active bands are gathered ONCE
+  // per repaint and the curve is evaluated from that small snapshot.
+  void GatherResponseBands(int circleId, std::vector<ResponseBand>& out)
+  {
+    out.clear();
+    if (mSampleRate <= 0.0) return;
+    for (int b = 0; b < kMaxBands; ++b)
+    {
+      const iplug::IParam* pActive = GetDelegate()->GetParam(BandParamIdx(b, kBandActive));
+      if (!pActive || pActive->Value() <= 0.5) continue;
+      const iplug::IParam* pCircle = GetDelegate()->GetParam(BandParamIdx(b, kBandCircleIndex));
+      if (!pCircle || static_cast<int>(pCircle->Value()) != circleId) continue;
+      const iplug::IParam* pMute = GetDelegate()->GetParam(BandParamIdx(b, kBandMute));
+      if (pMute && pMute->Value() > 0.5) continue;
+      const iplug::IParam* pType = GetDelegate()->GetParam(BandParamIdx(b, kBandFilterType));
+      const iplug::IParam* pCut  = GetDelegate()->GetParam(BandParamIdx(b, kBandCutoff));
+      const iplug::IParam* pReso = GetDelegate()->GetParam(BandParamIdx(b, kBandResonance));
+      const iplug::IParam* pGain = GetDelegate()->GetParam(BandParamIdx(b, kBandGainDb));
+      const iplug::IParam* pMorph = GetDelegate()->GetParam(BandParamIdx(b, kBandMorph));
+      const iplug::IParam* pExtra = GetDelegate()->GetParam(BandParamIdx(b, kBandFilterExtra));
+      if (!pType || !pCut || !pReso || !pGain || !pMorph || !pExtra) continue;
+
+      // Mirrors ExoEQ.cpp's ReadBandSettings exactly: morph and extra are
+      // percent in the UI, /100 for the DSP; gain is dB -> linear.
+      // Key-track and sidechain/group modulation are not reflected: the
+      // curve shows the band at its manual cutoff.
+      exoeq::FilterParams fp{ pCut->Value(), pReso->Value(), pMorph->Value() / 100.0,
+                              static_cast<exoeq::FilterTypeId>(static_cast<int>(pType->Value())),
+                              pExtra->Value() / 100.0 };
+      EnsureBandCache(b, fp);
+      out.push_back({ fp, std::pow(10.0, pGain->Value() / 20.0), b });
+    }
+  }
+
+  // Summed response at normalised position t, in dB. Parallel bands add as
+  // COMPLEX gains (so overlap cancels or reinforces correctly), each read from
+  // that band's measured table. GatherResponseBands guarantees every band in
+  // `bands` has a current table before this runs.
+  double ResponseDbAt(const std::vector<ResponseBand>& bands, double t)
+  {
+    const double hz = TToHz(t);
+    std::complex<double> total(0.0, 0.0);
+    for (const auto& rb : bands)
+    {
+      const BandResponseCache& c = mBandCache[rb.slot];
+      total += exoeq::InterpResponse(c.h, kCurveFMin, kCurveFMax, hz) * rb.gainLinear;
+    }
+    return exoeq::MagnitudeToDb(total);
+  }
+
+  // Frequency grid: radial ticks at the decade/half-decade marks Pro-Q labels,
+  // each with its own label just outside the arc. Replaces the two lone
+  // "20Hz"/"20kHz" end labels, which gave no reference anywhere in between.
+  void DrawFrequencyGrid(IGraphics& g, const IRECT& area)
+  {
+    using namespace iplug::igraphics;
+    const ArcGeom arc = GetArcGeom(area);
+    struct Tick { double hz; const char* label; bool major; };
+    static const Tick kTicks[] = {
+      {    20.0,  "20",   true  }, {    50.0,  "50",   false },
+      {   100.0,  "100",  true  }, {   200.0,  "200",  false },
+      {   500.0,  "500",  false }, {  1000.0,  "1k",   true  },
+      {  2000.0,  "2k",   false }, {  5000.0,  "5k",   false },
+      { 10000.0,  "10k",  true  }, { 20000.0,  "20k",  true  },
+    };
+    for (const auto& tick : kTicks)
+    {
+      const double t = HzToT(tick.hz);
+      const double a = (180.0 + t * 180.0) * kPi / 180.0;
+      const float ca = static_cast<float>(std::cos(a));
+      const float sa = static_cast<float>(std::sin(a));
+      const float rIn = arc.r * 0.30f;
+      const float rOut = arc.r * (tick.major ? 1.055f : 1.03f);
+      // Dotted radial, so the grid stays behind the curve rather than competing.
+      const int steps = tick.major ? 34 : 24;
+      for (int i = 0; i <= steps; ++i)
+      {
+        const float rr = rIn + (rOut - rIn) * i / steps;
+        g.FillCircle(BlueGray(tick.major ? 30 : 18), arc.cx + rr * ca, arc.cy + rr * sa, 0.7f);
+      }
+      // Clamped inside the graph: at radius*1.10 the labels near the top of the
+      // arc were landing above the graph area and getting clipped away.
+      const float lx = std::clamp(arc.cx + (arc.r * 1.10f) * ca, area.L + 28.f, area.R - 28.f);
+      const float ly = std::clamp(arc.cy + (arc.r * 1.10f) * sa, area.T + 10.f, area.B - 10.f);
+      g.DrawText(ScaledText(tick.major ? 11.f : 9.f, BlueGray(tick.major ? 235 : 165)), tick.label,
+                 IRECT(lx - 26.f, ly - 9.f, lx + 26.f, ly + 9.f));
+    }
+  }
+
+  // dB reference rings either side of the 0 dB arc, labelled at the left foot.
+  void DrawDbRings(IGraphics& g, const IRECT& area)
+  {
+    using namespace iplug::igraphics;
+    const ArcGeom arc = GetArcGeom(area);
+    const double kRings[] = { 12.0, 6.0, -6.0, -12.0 };
+    for (double db : kRings)
+    {
+      const float r = RadiusForDb(arc.r, db);
+      // Unlabelled on purpose. Every ring meets the left foot at the same
+      // height, so stacked labels there overlapped into an unreadable smear.
+      // The dB value is in the crosshair readout instead, where it has room.
+      DrawHemiArc(g, BlueGray(16), arc.cx, arc.cy, r, 1.f);
+    }
+  }
+
+  // The selected circle's summed response, drawn as a radial deviation from the
+  // 0 dB arc: outward is boost, inward is cut. This is the polar equivalent of
+  // Pro-Q's curve, and it is what makes the graph show what the filters DO.
+  void DrawResponseCurve(IGraphics& g, const IRECT& area, int circleId, bool ghost = false)
+  {
+    using namespace iplug::igraphics;
+    const ArcGeom arc = GetArcGeom(area);
+    std::vector<ResponseBand> bands;
+    GatherResponseBands(circleId, bands);
+    if (!ghost) mLastResponseBands = bands; // reused by the crosshair readout; ghosts must not overwrite it
+    if (bands.empty()) return;
+    // T2-5: the curve takes its circle's hue (CircleHueColor of the mean band frequency).
+    const IColor hue = CircleColorFor(circleId, false);
+    constexpr int kSteps = 140;
+    float px = 0.f, py = 0.f;
+    const int limit = ghost ? kSteps : static_cast<int>(kSteps * mLoadProgress + 0.5f); // T4-1 sweep
+    for (int i = 0; i <= kSteps && i <= limit; ++i)
+    {
+      const double t = static_cast<double>(i) / kSteps;
+      const double db = ResponseDbAt(bands, t);
+      const float r = RadiusForDb(arc.r, db);
+      const double a = (180.0 + t * 180.0) * kPi / 180.0;
+      const float cx = arc.cx + r * static_cast<float>(std::cos(a));
+      const float cy = arc.cy + r * static_cast<float>(std::sin(a));
+      // Shading back to the 0 dB arc. Drawn every 4th sample, not every sample:
+      // at 1-per-sample the 140 strokes overlapped into a solid dark comb that
+      // read as noise instead of as a filled region.
+      if ((i % 4) == 0 && std::abs(db) > 0.4)
+      {
+        const float zx = arc.cx + arc.r * static_cast<float>(std::cos(a));
+        const float zy = arc.cy + arc.r * static_cast<float>(std::sin(a));
+        if (!ghost) g.DrawLine(IColor(30, hue.R, hue.G, hue.B), cx, cy, zx, zy, nullptr, 1.2f);
+      }
+      if (i > 0)
+        // Ghosts are dashed (every other segment) and faint, so they read as 'other circles'.
+        if (!ghost || (i & 1) == 0)
+          g.DrawLine(IColor(ghost ? static_cast<int>(90.f * mGhostFade) : 255, hue.R, hue.G, hue.B), px, py, cx, cy, nullptr, ghost ? 1.4f : 2.2f);
+      px = cx;
+      py = cy;
+    }
+  }
+
+  static iplug::igraphics::IColor BlueGray(int a) { return iplug::igraphics::IColor(a, 116, 138, 168); }
 
   void DrawDepthStack(IGraphics& g, const IRECT& area, const std::vector<CircleInfo>& circles)
   {
@@ -1288,23 +1943,54 @@ public:
     // signal-flow-ordered) `circles` list -- rank 0 is the selected
     // circle itself (drawn largest, full opacity), rank N dims and
     // shrinks further out, same rolodex falloff as the mockups.
-    int selectedPos = 0;
-    for (size_t i = 0; i < circles.size(); ++i) if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
+    int targetSelectedPos = 0;
+    for (size_t i = 0; i < circles.size(); ++i) if (circles[i].circleId == mSelectedCircle) targetSelectedPos = static_cast<int>(i);
+    if (std::abs(mVisualSelectedPos - static_cast<float>(targetSelectedPos)) > 0.01f)
+    {
+      mVisualSelectedPos += (static_cast<float>(targetSelectedPos) - mVisualSelectedPos) * 0.18f;
+      SetDirty(false);
+    }
+    else
+      mVisualSelectedPos = static_cast<float>(targetSelectedPos);
 
-    const float cx = area.MW();
-    const float cy = area.B;
-    const float baseRadius = std::min(area.W(), area.H()) * 0.42f;
+    const ArcGeom arc = GetArcGeom(area);
+    const float cx = arc.cx;
+    const float cy = arc.cy;
+    const float baseRadius = arc.r;
+
+    // Radar/oscilloscope grid: faint concentric rings, radial spokes, and a
+    // static sweep line (static on purpose -- an animated sweep needs a timer).
+    for (int ring = 1; ring <= 3; ++ring)
+      DrawHemiArc(g, BlueGray(22), cx, cy, baseRadius * ring / 3.f, 1.f);
+    for (int spoke = 0; spoke <= 6; ++spoke)
+    {
+      const double ang = (180.0 + spoke * 30.0) * kPi / 180.0;
+      for (int d = 1; d <= 24; ++d)
+      {
+        const float f = baseRadius * d / 24.f;
+        g.FillCircle(BlueGray(26), cx + f * static_cast<float>(std::cos(ang)), cy + f * static_cast<float>(std::sin(ang)), 0.8f);
+      }
+    }
+    const double sweepAng = 300.0 * kPi / 180.0;
+    for (int d = 1; d <= 30; ++d)
+    {
+      const float f = baseRadius * d / 30.f;
+      g.FillCircle(IColor(static_cast<int>(60.f * d / 30.f), 150, 175, 210), cx + f * static_cast<float>(std::cos(sweepAng)), cy + f * static_cast<float>(std::sin(sweepAng)), 1.1f);
+    }
 
     for (size_t i = 0; i < circles.size(); ++i)
     {
-      const int rank = std::abs(static_cast<int>(i) - selectedPos);
+      const float rank = std::abs(static_cast<float>(i) - mVisualSelectedPos);
       const float scale = std::max(0.55f, 1.0f - rank * 0.08f);
       const float opacity = std::max(0.12f, 1.0f - rank * 0.16f);
-      const IColor hue = CircleHueColor(circles[i].avgHz);
-      const IColor faded(static_cast<int>(opacity * 255), hue.R, hue.G, hue.B);
+      const IColor faded = BlueGray(static_cast<int>(opacity * 255));
       const float r = baseRadius * scale;
-      g.DrawArc(faded, cx, cy, r, 180.f, 360.f, nullptr, 2.5f + (rank == 0 ? 1.f : 0.f));
+      DrawHemiArc(g, faded, cx, cy, r, 2.5f + (rank < 0.05f ? 1.f : 0.f));
     }
+    char layerLabel[32];
+    std::snprintf(layerLabel, sizeof(layerLabel), "CIRCLE %d", targetSelectedPos + 1);
+    g.DrawText(ScaledText(11.f, IColor(190, 210, 220, 235)), layerLabel,
+               IRECT(cx - baseRadius, cy - baseRadius - 24.f, cx - baseRadius + 104.f, cy - baseRadius - 8.f)); // T1-2: moved off the top-centre where the node tag sits
   }
 
   void DrawScrim(IGraphics& g, const IRECT& area, const std::vector<CircleInfo>& /*circles*/)
@@ -1313,10 +1999,8 @@ public:
     // 80%-opacity black specifically behind the SELECTED circle's own
     // footprint (not the whole background) -- ghosts peeking out past
     // its edges keep their own, lesser depth-dim level from DrawDepthStack.
-    const float cx = area.MW();
-    const float cy = area.B;
-    const float r = std::min(area.W(), area.H()) * 0.42f;
-    g.FillRect(IColor(204, 10, 10, 12), IRECT(cx - r, cy - r, cx + r, cy));
+    const ArcGeom arc = GetArcGeom(area);
+    g.FillRect(IColor(204, 10, 10, 12), IRECT(arc.cx - arc.r, arc.cy - arc.r, arc.cx + arc.r, arc.cy));
   }
 
   void DrawSelectedGauge(IGraphics& g, const IRECT& area, const std::vector<CircleInfo>& circles)
@@ -1355,7 +2039,7 @@ public:
     // not an approximation of it.
     {
       const ArcGeom arc = GetArcGeom(area);
-      g.DrawArc(IColor(140, 90, 90, 100), arc.cx, arc.cy, arc.r, 180.f, 360.f, nullptr, 2.f);
+      DrawHemiArc(g, IColor(190, 128, 146, 174), arc.cx, arc.cy, arc.r, 2.f);
     }
 
     // NEW THIS ROUND -- which band (if any) the cursor is currently
@@ -1366,16 +2050,104 @@ public:
     // hovered one's.
     int hoveredBand = -1;
     float hoveredBandX = 0.f, hoveredBandY = 0.f;
-    float hoveredBandDist = 12.f; // hover radius -- a little more forgiving than FindBandNear's own 10px click-hit radius, since this is just a readout, not a mutation
+    float selectedBandX = 0.f, selectedBandY = 0.f;
+    float hoveredBandDist = 22.f; // keep the readout aligned with the generous selectable hitbox
 
     if (sel)
     {
+      // FIXED: band dots/handles now place themselves using the SAME
+      // instant, discrete circle position FindBandNear/
+      // FindResonanceHandleNear use for hit-testing (selectedPos, an int),
+      // not the eased mVisualSelectedPos DrawDepthStack's own ring
+      // outlines slide with. Those two used to disagree for as long as
+      // the rolodex-slide animation was still easing toward its target,
+      // which is exactly the reported bug: a just-selected circle (one
+      // that isn't the first/outermost) visually read as if it were still
+      // sitting at its OLD rank while the real click target had already
+      // snapped to the new one underneath -- "nodes appear to be on the
+      // selected layer but you have to click in the dimmed circle below
+      // to actually hit them". The ring outlines keep their nice slide;
+      // only the clickable dots/handles are now instant.
+      int selectedPos = 0;
+      for (size_t i = 0; i < circles.size(); ++i)
+        if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
+
+      const ArcGeom segArc = GetArcGeom(area);
+
+      // NEW -- "two points" per SINGLE wide-type band (not a line between
+      // two different bands): a dotted line from the circle's own center
+      // out to that band's own dot, ending in a second, separately
+      // draggable point whose distance along the line reflects the
+      // band's CURRENT resonance/width. Narrow-focused types (bell/
+      // bandpass/notch/formant/resonator) skip this entirely -- their
+      // whole character already lives at the one point. Drawn before the
+      // dot loop so the dots end up on top of their own lines.
+      for (int b = 0; b < kMaxBands; ++b)
+      {
+        if (GetDelegate()->GetParam(BandParamIdx(b, kBandActive))->Value() <= 0.5) continue;
+        const int ordinal = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandFilterType))->Value());
+        const double morph = GetDelegate()->GetParam(BandParamIdx(b, kBandMorph))->Value();
+        if (IsNarrowFocusType(ordinal, morph)) continue;
+
+        const int circleId = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandCircleIndex))->Value());
+        int circlePos = selectedPos;
+        const IColor nodeCol = CircleColorFor(circleId, circleId != mSelectedCircle);
+        for (size_t ci = 0; ci < circles.size(); ++ci) if (circles[ci].circleId == circleId) circlePos = static_cast<int>(ci);
+        const float ringRadius = segArc.r * std::max(0.55f, 1.0f - std::abs(circlePos - selectedPos) * 0.08f);
+        const double cutoffHz = GetDelegate()->GetParam(BandParamIdx(b, kBandCutoff))->Value();
+        const double resonance = GetDelegate()->GetParam(BandParamIdx(b, kBandResonance))->Value();
+        const float handleRadius = ResonanceHandleRadius(ringRadius, resonance);
+        float dotX = 0.f, dotY = 0.f, handleX = 0.f, handleY = 0.f;
+        ArcPointForHzAtRadius(area, cutoffHz, ringRadius, dotX, dotY);
+        ArcPointForHzAtRadius(area, cutoffHz, handleRadius, handleX, handleY);
+
+        bool handleHovered = false;
+        if (mHoverValid)
+        {
+          const float hd = std::sqrt((mHoverX - handleX) * (mHoverX - handleX) + (mHoverY - handleY) * (mHoverY - handleY));
+          handleHovered = hd <= 14.f;
+        }
+
+        // Dotted line, center -> dot: short alternating strokes along the
+        // same radial direction, not a solid DrawLine, so it reads as a
+        // distinct "this is an axis, not an edge" affordance.
+        {
+          const double angleRad = std::atan2(static_cast<double>(dotY - segArc.cy), static_cast<double>(dotX - segArc.cx));
+          const float totalLen = std::sqrt((dotX - segArc.cx) * (dotX - segArc.cx) + (dotY - segArc.cy) * (dotY - segArc.cy));
+          constexpr float kDashLen = 5.f, kGapLen = 4.f;
+          float d = 0.f;
+          const IColor dashColor = handleHovered ? IColor(200, 120, 190, 235) : IColor(70, nodeCol.R, nodeCol.G, nodeCol.B);
+          while (d < totalLen)
+          {
+            const float d2 = std::min(d + kDashLen, totalLen);
+            const float ax = segArc.cx + d * static_cast<float>(std::cos(angleRad));
+            const float ay = segArc.cy + d * static_cast<float>(std::sin(angleRad));
+            const float bx2 = segArc.cx + d2 * static_cast<float>(std::cos(angleRad));
+            const float by2 = segArc.cy + d2 * static_cast<float>(std::sin(angleRad));
+            g.DrawLine(dashColor, ax, ay, bx2, by2, nullptr, 1.5f);
+            d += kDashLen + kGapLen;
+          }
+        }
+        // The second point itself -- smaller than the main dot, brightens
+        // and grows on hover (same visual language as the main dot).
+        const IColor handleColor = handleHovered ? COLOR_WHITE : IColor(220, nodeCol.R, nodeCol.G, nodeCol.B);
+        if (handleHovered) g.FillCircle(IColor(55, 90, 180, 235), handleX, handleY, 9.f);
+        g.FillCircle(handleColor, handleX, handleY, handleHovered ? 4.5f : 3.f);
+      }
+
       for (int b = 0; b < kMaxBands; ++b)
       {
         const bool active = GetDelegate()->GetParam(BandParamIdx(b, kBandActive))->Value() > 0.5;
         if (!active) continue;
         const int circleId = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandCircleIndex))->Value());
-        if (circleId != mSelectedCircle) continue;
+        int circlePos = selectedPos;
+        const IColor nodeCol = CircleColorFor(circleId, circleId != mSelectedCircle);
+        for (size_t ci = 0; ci < circles.size(); ++ci)
+        {
+          if (circles[ci].circleId == circleId) circlePos = static_cast<int>(ci);
+        }
+        const float circleRank = std::abs(static_cast<float>(circlePos - selectedPos));
+        const float circleRadius = GetArcGeom(area).r * std::max(0.55f, 1.0f - circleRank * 0.08f);
 
         const double cutoffHz = GetDelegate()->GetParam(BandParamIdx(b, kBandCutoff))->Value();
 
@@ -1397,29 +2169,63 @@ public:
         {
           if (h >= mGhostFilled[b]) continue;
           float gx = 0.f, gy = 0.f;
-          ArcPointForHz(area, mGhostHistory[b][h], gx, gy);
+          ArcPointForHzAtRadius(area, mGhostHistory[b][h], circleRadius, gx, gy);
           const float fade = 1.f - static_cast<float>(h) / static_cast<float>(kGhostTrailLen);
-          g.FillCircle(IColor(static_cast<int>(fade * 110.f), accent.R, accent.G, accent.B), gx, gy, 2.f + fade * 2.f);
+          g.FillCircle(IColor(static_cast<int>(fade * 110.f), nodeCol.R, nodeCol.G, nodeCol.B), gx, gy, 2.f + fade * 2.f);
         }
 
         // FIXED THIS ROUND: dot position is now a point ON the hemicircle
         // arc (ArcPointForHz, below), not a flat x/fixed-y pair.
         float x = 0.f, y = 0.f;
-        ArcPointForHz(area, cutoffHz, x, y);
+        ArcPointForHzAtRadius(area, cutoffHz, circleRadius, x, y);
         const bool selected = (b == mSelectedBand);
+        const bool hovered = mHoverValid && std::sqrt((mHoverX - x) * (mHoverX - x) + (mHoverY - y) * (mHoverY - y)) <= 18.f;
         // NEW THIS ROUND -- muted bands now read as muted ON THE GRAPH
         // itself (dimmed + smaller), not just in the new hover tooltip --
         // before this, a muted band looked completely identical to an
         // active one until you opened the detail panel or hovered it.
         const bool muted = GetDelegate()->GetParam(BandParamIdx(b, kBandMute))->Value() > 0.5;
-        IColor dotColor = selected ? COLOR_WHITE : accent;
-        float dotRadius = selected ? 6.f : 4.5f;
+        IColor dotColor = selected ? COLOR_WHITE : nodeCol;
+        float dotRadius = selected ? 6.f : (hovered ? 5.5f : 4.5f);
+        // A soft halo makes the active node unmistakable against the arc
+        // stack and gives the user a generous visual target for the next
+        // drag, matching the direct manipulation language of modern EQs.
+        if (selected)
+        {
+          g.FillCircle(IColor(34, CircleColorFor(circleId, false).R, CircleColorFor(circleId, false).G, CircleColorFor(circleId, false).B), x, y, 16.f);
+          g.FillCircle(IColor(70, CircleColorFor(circleId, false).R, CircleColorFor(circleId, false).G, CircleColorFor(circleId, false).B), x, y, 11.f);
+          // T3-3 (trial): stage marks on the selected node's own halo, for stepped morph types only.
+          // n dots fan out over ~0.9 rad, on the node's radial line; the active stage is white.
+          const int stages = MorphStepsForType(static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandFilterType))->Value()));
+          if (stages > 1)
+          {
+            const double pm = GetDelegate()->GetParam(BandParamIdx(b, kBandMorph))->Value() / 100.0;
+            const int activeStage = std::clamp(static_cast<int>(std::lround(pm * (stages - 1))), 0, stages - 1);
+            const ArcGeom arcG = GetArcGeom(area);
+            const double theta = std::atan2(y - arcG.cy, x - arcG.cx);
+            for (int k = 0; k < stages; ++k)
+            {
+              const double a = theta + (static_cast<double>(k) / (stages - 1) - 0.5) * 0.9;
+              const float sx = x + 20.f * static_cast<float>(std::cos(a));
+              const float sy = y + 20.f * static_cast<float>(std::sin(a));
+              if (k == activeStage) g.FillCircle(COLOR_WHITE, sx, sy, 2.5f);
+              else                  g.FillCircle(IColor(120, 170, 190, 220), sx, sy, 1.5f);
+            }
+          }
+        }
+        else if (hovered)
+          g.FillCircle(IColor(55, 90, 180, 235), x, y, 11.f);
         if (muted)
         {
           dotColor = IColor(140, dotColor.R, dotColor.G, dotColor.B); // same hue, lower alpha -- "still here, just not doing anything right now"
           dotRadius *= 0.75f;
         }
         g.FillCircle(dotColor, x, y, dotRadius);
+        if (selected)
+        {
+          selectedBandX = x;
+          selectedBandY = y;
+        }
 
         // NEW THIS ROUND -- hover-tooltip candidacy check, same spot the
         // dot itself is drawn so there's no second coordinate lookup.
@@ -1431,8 +2237,7 @@ public:
       }
     }
 
-    g.DrawText(IText(10.f, COLOR_GRAY), "20Hz", IRECT(gaugeArea.L, gaugeArea.B + 2.f, gaugeArea.L + 40.f, gaugeArea.B + 16.f));
-    g.DrawText(IText(10.f, COLOR_GRAY), "20kHz", IRECT(gaugeArea.R - 44.f, gaugeArea.B + 2.f, gaugeArea.R, gaugeArea.B + 16.f));
+    // (the old lone "20Hz"/"20kHz" end labels are now part of DrawFrequencyGrid)
 
     // NEW THIS ROUND -- Pro-Q-style "hover a node, see its own numbers"
     // tooltip: Hz + Q (resonance) + Mute state, right above whichever
@@ -1440,21 +2245,44 @@ public:
     // Separate from DrawCrosshair's own general "wherever you are on the
     // arc" readout -- this one is about a SPECIFIC existing band, not an
     // arbitrary hover position, so it only appears right at a real dot.
+    mSelectedTagShown = false; // re-set below only when the selected tag is actually drawn
     if (hoveredBand >= 0)
     {
       const double hz = GetDelegate()->GetParam(BandParamIdx(hoveredBand, kBandCutoff))->Value();
       const double q = GetDelegate()->GetParam(BandParamIdx(hoveredBand, kBandResonance))->Value();
       const bool muted = GetDelegate()->GetParam(BandParamIdx(hoveredBand, kBandMute))->Value() > 0.5;
       char buf[48];
-      if (hz >= 1000.0)
-        std::snprintf(buf, sizeof(buf), "%.2fkHz  Q %.2f%s", hz / 1000.0, q, muted ? "  (muted)" : "");
-      else
-        std::snprintf(buf, sizeof(buf), "%.0fHz  Q %.2f%s", hz, q, muted ? "  (muted)" : "");
-      const float labelHalfW = 60.f;
+      char hzText[24];
+      FormatHzAbbrev(hz, hzText, sizeof(hzText));
+      std::snprintf(buf, sizeof(buf), "%s  Q %.2f%s", hzText, q, muted ? "  (muted)" : "");
+      const float labelHalfW = 92.f;
       const float labelX = std::clamp(hoveredBandX, area.L + labelHalfW, area.R - labelHalfW);
-      const IRECT tipRect(labelX - labelHalfW, hoveredBandY - 28.f, labelX + labelHalfW, hoveredBandY - 12.f);
+      const IRECT tipRect(labelX - labelHalfW, hoveredBandY - 34.f, labelX + labelHalfW, hoveredBandY - 12.f);
       g.FillRect(IColor(200, 24, 24, 28), tipRect);
-      g.DrawText(IText(10.f, COLOR_WHITE), buf, tipRect);
+      g.DrawText(ScaledText(10.f, COLOR_WHITE), buf, tipRect);
+    }
+    else if (mSelectedBand >= 0)
+    {
+      // Pro-Q does not float a panel over its own curve: the selected band's
+      // numbers live in the docked strip at the bottom. Ours did both, so the
+      // big three-line HUD covered the curve it was describing AND duplicated
+      // the drawer that now shows Type/Cutoff/Reso/Gain/Mute. Reduced to a
+      // single compact value tag pinned to the node.
+      const double hz = GetDelegate()->GetParam(BandParamIdx(mSelectedBand, kBandCutoff))->Value();
+      const double gainDb = GetDelegate()->GetParam(BandParamIdx(mSelectedBand, kBandGainDb))->Value();
+      char tag[48];
+      char hzText[24];
+      FormatHzAbbrev(hz, hzText, sizeof(hzText));
+      std::snprintf(tag, sizeof(tag), "%s  %+.1fdB", hzText, gainDb);
+      const float halfW = 86.f;
+      const float tagX = std::clamp(selectedBandX, mRECT.L + halfW + 4.f, mRECT.R - halfW - 4.f);
+      float tagTop = selectedBandY - 38.f;
+      if (tagTop < mRECT.T + 4.f) tagTop = selectedBandY + 14.f;
+      const IRECT tagRect(tagX - halfW, tagTop, tagX + halfW, tagTop + 24.f);
+      mSelectedTagRect = tagRect;
+      mSelectedTagShown = true;
+      g.FillRect(IColor(225, 12, 16, 26), tagRect);
+      g.DrawText(ScaledText(10.f, COLOR_WHITE), tag, tagRect);
     }
   }
 
@@ -1462,6 +2290,26 @@ public:
   // mHoverValid/mHoverX tracking above. A no-op whenever the cursor
   // isn't over the gauge area at all (outside the control, or over the
   // rail/depth-stack background).
+  // T5-1: hovering close to the arc shows a tick and the frequency it would place a node at,
+  // before any click. Upper half only (the arc is the top of the hemicircle).
+  void DrawArcHoverTick(IGraphics& g, const IRECT& mainArea)
+  {
+    using namespace iplug::igraphics;
+    if (!mHoverValid) return;
+    const ArcGeom arc = GetArcGeom(mainArea);
+    const float dx = mHoverX - arc.cx;
+    const float dy = mHoverY - arc.cy;
+    if (dy > 0.f || std::abs(std::sqrt(dx * dx + dy * dy) - arc.r) > 12.f) return;
+    const double hz = HzFromArcPoint(mainArea, mHoverX, mHoverY);
+    float px = 0.f, py = 0.f, tx = 0.f, ty = 0.f;
+    ArcPointForHzAtRadius(mainArea, hz, arc.r, px, py);
+    ArcPointForHzAtRadius(mainArea, hz, arc.r + 16.f, tx, ty);
+    g.DrawLine(IColor(170, 220, 230, 255), px, py, tx, ty, nullptr, 1.f);
+    char buf[32];
+    FormatHzReadout(hz, buf, sizeof(buf));
+    g.DrawText(ScaledText(10.f, IColor(235, 205, 220, 245)), buf, IRECT(tx - 40.f, ty - 16.f, tx + 40.f, ty - 3.f));
+  }
+
   void DrawCrosshair(IGraphics& g, const IRECT& area)
   {
     using namespace iplug::igraphics;
@@ -1492,14 +2340,16 @@ public:
       g.FillCircle(IColor(45, 255, 255, 255), arc.cx + (px - arc.cx) * f, arc.cy + (py - arc.cy) * f, 1.1f);
     }
 
-    char buf[32];
-    if (hz >= 1000.0)
-      std::snprintf(buf, sizeof(buf), "%.2f kHz", hz / 1000.0);
-    else
-      std::snprintf(buf, sizeof(buf), "%.0f Hz", hz);
-    const float labelHalfW = 40.f;
+    // Hz AND the curve's dB at that frequency -- this is where the dB reference
+    // lives now that the rings themselves are unlabelled.
+    const double curveDb = ResponseDbAt(mLastResponseBands, HzToT(hz));
+    char buf[48];
+    char hzText[24];
+    FormatHzReadout(hz, hzText, sizeof(hzText));
+    std::snprintf(buf, sizeof(buf), "%s   %+.1f dB", hzText, curveDb);
+    const float labelHalfW = 92.f;
     const float labelX = std::clamp(px, gaugeArea.L + labelHalfW, gaugeArea.R - labelHalfW);
-    g.DrawText(IText(11.f, COLOR_WHITE), buf, IRECT(labelX - labelHalfW, gaugeArea.T - 16.f, labelX + labelHalfW, gaugeArea.T));
+    g.DrawText(ScaledText(11.f, COLOR_WHITE), buf, IRECT(labelX - labelHalfW, gaugeArea.T - 22.f, labelX + labelHalfW, gaugeArea.T));
   }
 
   void DrawRail(IGraphics& g, const IRECT& railArea, const std::vector<CircleInfo>& circles)
@@ -1540,13 +2390,37 @@ public:
         if (GetDelegate()->GetParam(BandParamIdx(b, kBandMute))->Value() <= 0.5) { allMuted = false; break; }
       }
       const float muteDim = allMuted ? 0.45f : 1.0f;
-      const float alpha = (isCenter ? 1.0f : std::max(0.15f, 1.0f - distFromCenter * 0.85f)) * muteDim;
-      const IColor hue = CircleHueColor(circles[idx].avgHz);
-      const IColor rowColor(static_cast<int>(alpha * 255), hue.R, hue.G, hue.B);
-      g.FillRect(IColor(static_cast<int>(alpha * 40), hue.R, hue.G, hue.B), rowRect);
-      g.DrawText(IText(11.f, rowColor), std::to_string(circles[idx].bandCount).c_str(), rowRect);
+      // Floor raised from 0.15: off-centre rail rows were effectively unreadable
+      // against the near-black background. Pro-Q keeps every row legible and only
+      // uses brightness for emphasis, not for hiding information.
+      const float alpha = (isCenter ? 1.0f : std::max(0.5f, 1.0f - distFromCenter * 0.5f)) * muteDim;
+      // T2-5: each rail row takes its circle's own hue (CircleHueColor, from its avg frequency).
+      const IColor hue = CircleColorFor(circles[idx].circleId, false);
+      const IColor rowColor(static_cast<int>(alpha * 255), 200, 212, 228);
       if (isCenter)
-        g.DrawText(IText(11.f, COLOR_WHITE), ">", IRECT(rowRect.R - 12.f, rowRect.T, rowRect.R, rowRect.B));
+      {
+        // Glowing active row: stacked translucent layers, widest/faintest outside.
+        for (int gl = 4; gl >= 1; --gl)
+          g.FillRect(IColor(14 + (4 - gl) * 8, 122, 92, 214), rowRect.GetPadded(static_cast<float>(gl) * 2.f)); // violet active glow (Concept 02)
+        g.FillRect(IColor(230, hue.R, hue.G, hue.B), IRECT(rowRect.L, rowRect.T, rowRect.L + 2.f, rowRect.B));
+      }
+      else
+      {
+        // NEW -- cosmetic hover brighten, same "this is clickable" signal
+        // every other interactive bit in this file now gives.
+        const bool rowHovered = mHoverValid && rowRect.Contains(mHoverX, mHoverY);
+        g.FillRect(IColor(static_cast<int>(alpha * (rowHovered ? 55.f : 20.f)), 150, 170, 200), rowRect);
+      }
+      const float lineY = rowRect.MH();
+      const float lineL = rowRect.L + 8.f;
+      const float lineR = rowRect.R - 8.f;
+      g.FillRect(IColor(static_cast<int>(alpha * 70), hue.R, hue.G, hue.B), IRECT(lineL, lineY - 2.f, lineR, lineY + 2.f));
+      char rowLabel[32];
+      // shortened from "C1  2 bands": at 1.5x the long form no longer fits a rail row
+      std::snprintf(rowLabel, sizeof(rowLabel), "C%d  %db", circles[idx].circleId + 1, circles[idx].bandCount);
+      g.DrawText(ScaledText(12.f, rowColor), rowLabel, IRECT(rowRect.L + 10.f, rowRect.T + 5.f, rowRect.R - 18.f, rowRect.B - 5.f));
+      if (isCenter)
+        g.DrawText(ScaledText(11.f, COLOR_WHITE), ">", IRECT(rowRect.R - 12.f, rowRect.T, rowRect.R, rowRect.B));
 
       // NEW THIS ROUND -- hovering a rail row shows its own avg Hz +
       // band count as a small tooltip, same idea as the per-band hover
@@ -1558,15 +2432,21 @@ public:
       {
         char buf[48];
         const double avgHz = circles[idx].avgHz;
-        if (avgHz >= 1000.0)
-          std::snprintf(buf, sizeof(buf), "%.2fkHz avg, %d band%s", avgHz / 1000.0, circles[idx].bandCount, circles[idx].bandCount == 1 ? "" : "s");
-        else
-          std::snprintf(buf, sizeof(buf), "%.0fHz avg, %d band%s", avgHz, circles[idx].bandCount, circles[idx].bandCount == 1 ? "" : "s");
+        char hzText[24];
+        FormatHzReadout(avgHz, hzText, sizeof(hzText));
+        std::snprintf(buf, sizeof(buf), "%s avg, %d band%s", hzText, circles[idx].bandCount, circles[idx].bandCount == 1 ? "" : "s");
         const IRECT tipRect(railArea.L - 150.f, rowRect.T, railArea.L, rowRect.B);
         g.FillRect(IColor(200, 24, 24, 28), tipRect);
-        g.DrawText(IText(10.f, COLOR_WHITE), buf, tipRect.GetPadded(-4.f));
+        g.DrawText(ScaledText(10.f, COLOR_WHITE), buf, tipRect.GetPadded(-4.f));
       }
     }
+    // T3-4: the bottom line describes what the pointer can do right now, instead of one fixed hint.
+    const bool overRail = mHoverValid && railArea.Contains(mHoverX, mHoverY);
+    const char* hint = overRail ? "click circle to select  |  wheel: scroll list"
+                     : (mSelectedBand >= 0 ? "drag node  |  click tag to type  |  shift+wheel: move"
+                                           : "click empty graph: new band  |  shift+wheel: move");
+    g.DrawText(ScaledText(8.f, IColor(150, 160, 175, 180)), hint,
+               IRECT(mRECT.R - 420.f, mRECT.B - 18.f, mRECT.R - 12.f, mRECT.B - 4.f));
   }
 
   int RailRowAt(const IRECT& railArea, const std::vector<CircleInfo>& circles, float y)
@@ -1609,11 +2489,26 @@ public:
   // against-your-exact-headers caveat as every other UI/SDK-signature
   // note in this project; paste the error if the exact parameter order/
   // types don't match.
-  void OnMouseWheel(float x, float y, const IMouseMod& /*mod*/, float delta) override
+  void OnMouseWheel(float x, float y, const IMouseMod& mod, float delta) override
   {
-    const IRECT railArea = mRECT.GetFromRight(70.f);
+    const IRECT railArea = mRECT.GetFromRight(kRailW);
     if (railArea.Contains(x, y))
     {
+      if (mod.S)
+      {
+        const std::vector<CircleInfo> circles = GatherCircles();
+        int selectedPos = -1;
+        for (size_t i = 0; i < circles.size(); ++i)
+          if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
+        const int targetPos = selectedPos + ((delta > 0.f) ? -1 : 1);
+        if (selectedPos >= 0 && targetPos >= 0 && targetPos < static_cast<int>(circles.size()))
+        {
+          PushUndoSnapshot();
+          SwapCircleOrder(circles[selectedPos].circleId, circles[targetPos].circleId);
+          SetDirty(false);
+        }
+        return;
+      }
       mRailScrollOffset += (delta > 0.f) ? -1 : 1;
       SetDirty(false);
       return;
@@ -1632,7 +2527,7 @@ public:
     // stack, a flood of undo entries for "scrolled the wheel 5 times"
     // would make Undo far less useful for the gestures that actually
     // need it (creates/deletes/retunes).
-    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - 70.f, mRECT.B);
+    const IRECT mainArea(mRECT.L, mRECT.T, mRECT.R - kRailW, mRECT.B);
     const IRECT gaugeArea = GaugeArea(mainArea);
     if (mSelectedBand < 0 || !gaugeArea.Contains(x, y)) return;
     if (GetDelegate()->GetParam(BandParamIdx(mSelectedBand, kBandActive))->Value() <= 0.5) return;
@@ -1656,18 +2551,110 @@ public:
     return IRECT(l, t, l + kPickerW, t + h);
   }
 
+  // Normalized (0..1) response shape for picker card i (0=Bell,1=LP,2=HP,3=BP,4=Notch),
+  // t = normalized log-frequency. Icon-only approximation, not the DSP curve.
+  static double PickerIconResponse(int i, double t)
+  {
+    switch (i)
+    {
+      case 0: return std::exp(-std::pow((t - 0.5) / 0.12, 2.0)) * 0.9 + 0.1;
+      case 1: return 1.0 / (1.0 + std::exp((t - 0.5) * 14.0));
+      case 2: return 1.0 / (1.0 + std::exp((0.5 - t) * 14.0));
+      case 3: return std::exp(-std::pow((t - 0.5) / 0.09, 2.0));
+      default: return 1.0 - std::exp(-std::pow((t - 0.5) / 0.08, 2.0)) * 0.9;
+    }
+  }
+
+  // Short label for the node HUD. Only the 5 curated picker types are named;
+  // other ordinals show their number until the full InitEnum names are mirrored here.
+  static const char* FilterShortName(int ordinal)
+  {
+    // Mirrors ExoEQ.cpp's InitEnum list for kBandFilterType, in ordinal order.
+    // Keep in sync if that list changes (same rule as the constants above).
+    static const char* const kNames[] = {
+      "Morph (LP-BP-HP)",
+      "Lowpass 6",
+      "Lowpass 12",
+      "Lowpass 24",
+      "Lowpass 48",
+      "Highpass 6",
+      "Highpass 12",
+      "Highpass 24",
+      "Highpass 48",
+      "Bandpass 12",
+      "Bandpass 24",
+      "Notch 12",
+      "Capacitor",
+      "Air Lift",
+      "AW Lowpass 2",
+      "AW Highpass 2",
+      "AW Z-Lowpass",
+      "AW Z-Highpass",
+      "AW Z-Bandpass",
+      "AW Z-Notch",
+      "AW X-Lowpass",
+      "AW X-Highpass",
+      "AW X-Bandpass",
+      "AW X-Notch",
+      "AW Holt Lowpass",
+      "AW Biquad Stack",
+      "AW Y-Lowpass",
+      "AW Y-Highpass",
+      "AW Y-Bandpass",
+      "AW Y-Notch",
+      "AW Biquad NonLin Lowpass",
+      "AW Biquad NonLin Bandpass",
+      "AW Z-Acid Lowpass",
+      "AW Hermepass Highpass",
+      "AW AverMatrix",
+      "AW SlewSonic",
+      "Comb Feedforward",
+      "Comb Feedback",
+      "Ring Modulator",
+      "Filter FM",
+      "Vocal Formant",
+      "Phaser",
+      "Phys Odd Resonator",
+      "Phys Even Resonator",
+      "Resample"
+    };
+    constexpr int kCount = static_cast<int>(sizeof(kNames) / sizeof(kNames[0]));
+    if (ordinal < 0 || ordinal >= kCount) return "Unknown";
+    return kNames[ordinal];
+  }
+
+  // MIDI / MTS-ESP status lamps (top-right of the graph). Read live each repaint.
+  // MIDI lamp = MIDI input enabled (config.h), NOT 'notes currently held'.
+  // MTS lamp = the MTS-ESP enable param, NOT a verified master connection.
+  void DrawStatusLamps(IGraphics& g, const IRECT& mainArea)
+  {
+    using namespace iplug::igraphics;
+    const bool mtsOn = GetDelegate()->GetParam(kGlobalMtsEspEnabled)->Value() > 0.5;
+    const bool midiOn = true;
+    const float y = mainArea.T + 12.f;
+    const float x = mainArea.R - 150.f;
+    auto lamp = [&](float lx, bool on, IColor onColor, const char* label)
+    {
+      g.FillCircle(on ? IColor(255, onColor.R, onColor.G, onColor.B) : IColor(255, 40, 44, 54), lx, y, 3.5f);
+      if (on) g.FillCircle(IColor(50, onColor.R, onColor.G, onColor.B), lx, y, 7.f);
+      g.DrawText(ScaledText(9.f, COLOR_GRAY), label, IRECT(lx + 8.f, y - 7.f, lx + 60.f, y + 7.f));
+    };
+    lamp(x, midiOn, IColor(255, 150, 200, 255), "MIDI");
+    lamp(x + 64.f, mtsOn, IColor(255, 150, 255, 200), "MTS-ESP");
+  }
+
   void DrawTypePicker(IGraphics& g)
   {
     using namespace iplug::igraphics;
     if (mPendingPickBand < 0) return;
     const IRECT cardRect = GetPickerCardRect();
-    g.FillRect(IColor(240, 32, 32, 38), cardRect);
+    g.FillRect(IColor(248, 15, 22, 30), cardRect);
     // A plain 1px border built from 4 thin FillRect strips rather than a
     // DrawRect/DrawRoundRect outline call -- FillRect is already proven
     // to compile everywhere else in this file; an outline-specific call
     // isn't, and there's no reason to risk a new unverified primitive
     // just for a border.
-    const IColor borderColor(255, 90, 90, 100);
+    const IColor borderColor(255, 96, 118, 146);
     g.FillRect(borderColor, IRECT(cardRect.L, cardRect.T, cardRect.R, cardRect.T + 1.f));
     g.FillRect(borderColor, IRECT(cardRect.L, cardRect.B - 1.f, cardRect.R, cardRect.B));
     g.FillRect(borderColor, IRECT(cardRect.L, cardRect.T, cardRect.L + 1.f, cardRect.B));
@@ -1677,17 +2664,31 @@ public:
     for (int i = 0; i < pickerCount; ++i)
     {
       const IRECT rowRect(cardRect.L, cardRect.T + i * kPickerRowH, cardRect.R, cardRect.T + (i + 1) * kPickerRowH);
-      g.DrawText(IText(12.f, COLOR_WHITE), pickerItems[i].label, rowRect.GetPadded(-6.f));
+      if (i == 0)
+        g.FillRect(IColor(255, 38, 64, 92), rowRect.GetPadded(1.f));
+      // Waveform icon: sampled response shape, drawn as a dot trace (FillCircle only).
+      const IRECT iconRect(rowRect.L + 8.f, rowRect.T + 4.f, rowRect.L + 46.f, rowRect.B - 4.f);
+      for (int x = 0; x <= 23; ++x)
+      {
+        const double t = x / 23.0;
+        const double m = PickerIconResponse(i, t);
+        g.FillCircle(BlueGray(230), iconRect.L + static_cast<float>(t) * iconRect.W(), iconRect.B - static_cast<float>(m) * iconRect.H(), 1.1f);
+      }
+      g.DrawText(ScaledText(15.f, COLOR_WHITE), pickerItems[i].label, IRECT(rowRect.L + 54.f, rowRect.T, rowRect.R - 8.f, rowRect.B));
     }
   }
 
-  // The selected circle's gauge occupies the lower-center ~70% of the
-  // main area, matching the mockups' "semicircle sits low, labels below
-  // it" framing -- the depth stack above still shows through behind it.
+  // The selected circle's interaction area is inset from the graph edges.
+  // The actual arc geometry is centered independently so the stack remains
+  // visible as a complete, selectable object rather than a clipped curve.
   IRECT GaugeArea(const IRECT& mainArea) const
   {
-    const float padV = mainArea.H() * 0.3f;
-    const float padH = mainArea.W() * 0.08f;
+    // Keep the whole centered arc inside the interaction region. The former
+    // lower-third inset made the upper half of the circle visually present
+    // but impossible to click, which is especially confusing when selecting
+    // a newly created band.
+    const float padV = mainArea.H() * 0.06f;
+    const float padH = mainArea.W() * 0.05f;
     return IRECT(mainArea.L + padH, mainArea.T + padV, mainArea.R - padH, mainArea.B - padV);
   }
 
@@ -1699,22 +2700,117 @@ public:
   // not a flat line a few px above the gauge's bottom edge.
   int FindBandNear(const IRECT& mainArea, float x, float y)
   {
-    constexpr float kHitRadiusPx = 10.f;
+    constexpr float kHitRadiusPx = 22.f;
     int best = -1;
     float bestDist = kHitRadiusPx;
+    const std::vector<CircleInfo> circles = GatherCircles();
+    int selectedPos = 0;
+    for (size_t i = 0; i < circles.size(); ++i)
+      if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
     for (int b = 0; b < kMaxBands; ++b)
     {
       const bool active = GetDelegate()->GetParam(BandParamIdx(b, kBandActive))->Value() > 0.5;
       if (!active) continue;
       const int circleId = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandCircleIndex))->Value());
-      if (circleId != mSelectedCircle) continue;
+      int circlePos = selectedPos;
+      for (size_t i = 0; i < circles.size(); ++i)
+        if (circles[i].circleId == circleId) circlePos = static_cast<int>(i);
+      const float radius = GetArcGeom(mainArea).r * std::max(0.55f, 1.0f - std::abs(circlePos - selectedPos) * 0.08f);
       const double cutoffHz = GetDelegate()->GetParam(BandParamIdx(b, kBandCutoff))->Value();
       float bx = 0.f, by = 0.f;
-      ArcPointForHz(mainArea, cutoffHz, bx, by);
+      ArcPointForHzAtRadius(mainArea, cutoffHz, radius, bx, by);
       const float dist = std::sqrt((x - bx) * (x - bx) + (y - by) * (y - by));
       if (dist < bestDist) { bestDist = dist; best = b; }
     }
     return best;
+  }
+
+  // NEW -- "two points" per SINGLE band, not between different bands.
+  // A wide (non-narrow-focused) filter type's resonance/width is its own
+  // handle on the arc: a second point sitting on a dotted line from the
+  // circle's own center out to the band's dot, at a radius that reflects
+  // the CURRENT resonance (near the center = low resonance/wide slope,
+  // out near the dot itself = high resonance/narrow). Bell/notch-like
+  // (narrow-focused) types don't get one -- their whole character is
+  // already at that one point, there's nothing a second handle would add.
+  // DrawSelectedGauge draws the dotted line + handle; this is the
+  // matching hit-test, checked in OnMouseDown only after the band's own
+  // dot misses (the dot is still the primary, larger target).
+  int FindResonanceHandleNear(const IRECT& mainArea, float x, float y)
+  {
+    constexpr float kHitRadiusPx = 14.f;
+    int best = -1;
+    float bestDist = kHitRadiusPx;
+    const std::vector<CircleInfo> circles = GatherCircles();
+    int selectedPos = 0;
+    for (size_t i = 0; i < circles.size(); ++i)
+      if (circles[i].circleId == mSelectedCircle) selectedPos = static_cast<int>(i);
+    for (int b = 0; b < kMaxBands; ++b)
+    {
+      if (GetDelegate()->GetParam(BandParamIdx(b, kBandActive))->Value() <= 0.5) continue;
+      const int ordinal = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandFilterType))->Value());
+      const double morph = GetDelegate()->GetParam(BandParamIdx(b, kBandMorph))->Value();
+      if (IsNarrowFocusType(ordinal, morph)) continue;
+      const int circleId = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(b, kBandCircleIndex))->Value());
+      int circlePos = selectedPos;
+      for (size_t i = 0; i < circles.size(); ++i)
+        if (circles[i].circleId == circleId) circlePos = static_cast<int>(i);
+      const float ringRadius = GetArcGeom(mainArea).r * std::max(0.55f, 1.0f - std::abs(circlePos - selectedPos) * 0.08f);
+      const double cutoffHz = GetDelegate()->GetParam(BandParamIdx(b, kBandCutoff))->Value();
+      const double resonance = GetDelegate()->GetParam(BandParamIdx(b, kBandResonance))->Value();
+      const float handleRadius = ResonanceHandleRadius(ringRadius, resonance);
+      float hx = 0.f, hy = 0.f;
+      ArcPointForHzAtRadius(mainArea, cutoffHz, handleRadius, hx, hy);
+      const float dist = std::sqrt((x - hx) * (x - hx) + (y - hy) * (y - hy));
+      if (dist < bestDist) { bestDist = dist; best = b; }
+    }
+    return best;
+  }
+
+  // Classifies a filter type as "narrow-focused" (bell/bandpass/notch/
+  // formant/resonator -- character lives at one point) vs "wide" (low/
+  // high-pass and the rest -- character spans a region, so the resonance
+  // handle below is meaningful). Matched by substring against
+  // FilterShortName so it can't silently drift out of sync with that
+  // list. Ordinal 0 (Morph LP-BP-HP) is special-cased on the morph value
+  // itself since that ONE ordinal can BE a bell-like bandpass (mid-morph)
+  // or a plain low/high-pass (morph near either edge).
+  static bool IsNarrowFocusType(int ordinal, double morph)
+  {
+    const char* name = FilterShortName(ordinal);
+    auto has = [&](const char* needle) { return std::strstr(name, needle) != nullptr; };
+    if (has("Bandpass") || has("Notch") || has("Formant") || has("Resonator")) return true;
+    if (ordinal == 0) return morph > 30.0 && morph < 70.0;
+    return false;
+  }
+
+  // Resonance (0.05..20, same range PushParamValue elsewhere in this file
+  // already clamps it to) <-> the handle's 0..1 position along its
+  // center-to-dot line, log-mapped so the handle's motion feels even
+  // across the whole range instead of being squashed near one end.
+  static double ResonanceToUnit(double resonance)
+  {
+    constexpr double kMin = 0.05, kMax = 20.0;
+    const double t = (std::log(std::clamp(resonance, kMin, kMax)) - std::log(kMin)) / (std::log(kMax) - std::log(kMin));
+    return std::clamp(t, 0.0, 1.0);
+  }
+  static double UnitToResonance(double t)
+  {
+    constexpr double kMin = 0.05, kMax = 20.0;
+    return std::exp(std::log(kMin) + std::clamp(t, 0.0, 1.0) * (std::log(kMax) - std::log(kMin)));
+  }
+  // Keeps the handle a fixed minimum fraction out from the center even at
+  // the lowest resonance, so it's never a dead pixel sitting exactly on
+  // the center point -- always a real, separately-grabbable target. The
+  // outer cap (NEW -- was 1.0, i.e. could land exactly ON the node at
+  // max resonance) keeps a small gap at the other end too, so the two
+  // points never fully overlap and become a single, ambiguous target.
+  static constexpr float kResHandleInnerFrac = 0.22f;
+  static constexpr float kResHandleOuterFrac = 0.90f;
+  static float ResonanceHandleRadius(float ringRadius, double resonance)
+  {
+    const float t = static_cast<float>(ResonanceToUnit(resonance));
+    return ringRadius * (kResHandleInnerFrac + (kResHandleOuterFrac - kResHandleInnerFrac) * t);
   }
 
   // NOT const, same GetDelegate() reason as FindBandNear above.
@@ -1729,6 +2825,14 @@ public:
   void SelectBand(int bandIndex)
   {
     mSelectedBand = bandIndex;
+    if (bandIndex >= 0)
+    {
+      // Selecting a dot also selects its circle. This makes every visible
+      // band a direct target, instead of requiring the user to select the
+      // rail row first and then hunt for the band again.
+      mSelectedCircle = static_cast<int>(GetDelegate()->GetParam(BandParamIdx(bandIndex, kBandCircleIndex))->Value());
+      mRailScrollOffset = 0;
+    }
     if (mOnBandSelected) mOnBandSelected(bandIndex);
   }
 
@@ -1822,7 +2926,11 @@ public:
   // with what's actually drawn on screen.
   ArcGeom GetArcGeom(const IRECT& mainArea) const
   {
-    return { mainArea.MW(), mainArea.B, std::min(mainArea.W(), mainArea.H()) * 0.42f };
+    // Radar base near the bottom of the graph (mockup), radius fitted to
+    // whichever dimension runs out first. Top of the arc: cy - r >= mainArea.T.
+    const float r = std::min(mainArea.W() * 0.42f, mainArea.H() * 0.82f);
+    const float cy = mainArea.T + mainArea.H() * 0.92f;
+    return { mainArea.MW(), cy, r };
   }
 
   // Hz -> a point ON the selected circle's own hemicircle arc. THIS IS
@@ -1835,10 +2943,16 @@ public:
   void ArcPointForHz(const IRECT& mainArea, double hz, float& xOut, float& yOut)
   {
     const ArcGeom arc = GetArcGeom(mainArea);
+    ArcPointForHzAtRadius(mainArea, hz, arc.r, xOut, yOut);
+  }
+
+  void ArcPointForHzAtRadius(const IRECT& mainArea, double hz, float radius, float& xOut, float& yOut)
+  {
+    const ArcGeom arc = GetArcGeom(mainArea);
     const double t = HzToT(hz);
     const double angleRad = (180.0 + t * 180.0) * kPi / 180.0;
-    xOut = arc.cx + arc.r * static_cast<float>(std::cos(angleRad));
-    yOut = arc.cy + arc.r * static_cast<float>(std::sin(angleRad));
+    xOut = arc.cx + radius * static_cast<float>(std::cos(angleRad));
+    yOut = arc.cy + radius * static_cast<float>(std::sin(angleRad));
   }
 
   // Inverse of ArcPointForHz -- maps a click/drag/hover point back to Hz
@@ -1865,15 +2979,61 @@ public:
   // Same normalized-value convention as BandGraphControl::PushParamValue
   // -- see that function's own comment on the one line most likely to
   // need an SDK-signature fix if this doesn't compile as-is.
+  // FIXED THIS ROUND -- the actual cause of "click at the top gives ~527 Hz,
+  // should be ~3200": this used to convert real->normalized LINEARLY, but
+  // the cutoff param is declared with IParam::ShapePowCurve(2.) (ExoEQ.cpp,
+  // InitDouble for kBandCutoff). A linear normalized value fed into a
+  // power-curve param is squared on read, so 3150 Hz (norm 0.157) landed at
+  // 20 + 19980*0.157^2 = ~514 Hz. The crosshair was right because it reads
+  // the mapping directly; the write path ignored the param's own curve.
+  // Node drags and resonance drags were hit by the same bug -- the value
+  // written didn't match the value the cursor implied. Now the parameter
+  // itself converts (ToNormalized), so whatever shape it declares is honored.
+  // Typed node entry, one field at a time. Frequency accepts "2.5k" or "440" (k = x1000,
+  // clamped to 20 Hz-20 kHz). Gain accepts "-3.5" (dB, clamped to +-24). Unit text is ignored.
+  void OnTextEntryCompletion(const char* str, int /*valIdx*/) override
+  {
+    if (!str || mNodeEntryBand < 0) return;
+    char* end = nullptr;
+    const double v = std::strtod(str, &end);
+    if (end == str) { mNodeEntryBand = -1; return; }   // unreadable: keep the node as it is
+
+    PushUndoSnapshot();
+    if (mNodeEntryField == 0)
+    {
+      const bool kilo = (*end == 'k' || *end == 'K');
+      const double hz = kilo ? v * 1000.0 : v;
+      PushParamValue(BandParamIdx(mNodeEntryBand, kBandCutoff), std::clamp(hz, 20.0, 20000.0), 20.0, 20000.0);
+    }
+    else
+    {
+      PushParamValue(BandParamIdx(mNodeEntryBand, kBandGainDb), std::clamp(v, -24.0, 24.0), -24.0, 24.0);
+    }
+    mNodeEntryBand = -1;
+    SetDirty(false);
+  }
+
   void PushParamValue(int paramIdx, double realValue, double rangeMin, double rangeMax)
   {
-    const double normalized = std::clamp((realValue - rangeMin) / (rangeMax - rangeMin), 0.0, 1.0);
+    const double clamped = std::clamp(realValue, rangeMin, rangeMax);
+    double normalized = (clamped - rangeMin) / (rangeMax - rangeMin);
+    if (auto* p = GetDelegate()->GetParam(paramIdx))
+      normalized = p->ToNormalized(clamped);
     GetDelegate()->SendParameterValueFromUI(paramIdx, normalized);
   }
 
   double mSampleRate;
   int mSelectedCircle = 0;
   int mSelectedBand = -1;
+  // Click-to-type on the selected node's tag (see OnMouseDown / OnTextEntryCompletion).
+  IRECT mSelectedTagRect;          // where the tag was last drawn; empty when not shown
+  bool mSelectedTagShown = false;
+  int mNodeEntryBand = -1;         // band whose tag opened the current text entry
+  int mNodeEntryField = 0;         // 0 = frequency (left half of the tag), 1 = gain (right half)
+  float mVisualSelectedPos = 0.f;
+  iplug::igraphics::ILayerPtr mGridLayer; // T4-5 cached grid + labels
+  float mGhostFade = 1.f; // 0..1, set each Draw from the circle count
+  float mLoadProgress = 0.f; // T4-1: 0..1, drives the load sweep
   bool mDraggingNewBand = false;
   bool mDragIsRange = false;
   float mDragStartX = 0.f;
@@ -1884,6 +3044,10 @@ public:
   // release before deciding anything; retuning an existing band updates
   // live on every drag event instead, so it doesn't reuse that state).
   bool mDraggingExistingBand = false;
+  bool mDraggingGain = false;           // NEW -- right-drag vertical gain on a node
+  double mGainDragStartDb = 0.0;
+  float mGainDragStartY = 0.f;
+  bool mDraggingResonanceHandle = false; // NEW -- dragging a wide-type band's second (resonance) point
   int mDraggedBand = -1;
   // NEW THIS ROUND -- crosshair/hover-readout state (OnMouseOver/
   // OnMouseOut/OnMouseDrag above, DrawCrosshair below).
@@ -1913,6 +3077,7 @@ public:
   // any heap churn on the UI thread for something this small (kMaxBands
   // * kGhostTrailLen doubles, a few KB total).
   static constexpr int kGhostTrailLen = 5;
+  std::vector<ResponseBand> mLastResponseBands; // filled by DrawResponseCurve, read by DrawCrosshair in the same frame
   double mGhostHistory[kMaxBands][kGhostTrailLen] = {};
   int mGhostFilled[kMaxBands] = {};
   // NEW THIS ROUND -- undo/redo stacks (PushUndoSnapshot/Undo/Redo above).
@@ -1931,3 +3096,4 @@ public:
   std::vector<PresetCircleDef> mUserPresets;
   std::function<void(int)> mOnBandSelected;
 };
+

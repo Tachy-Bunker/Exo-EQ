@@ -15,11 +15,11 @@
 
 #define SHARED_RESOURCES_SUBPATH "ExoEQ"
 
-#define PLUG_CHANNEL_IO "2.2-2"
+#define PLUG_CHANNEL_IO "2.2-2"   // DIAGNOSTIC: no sidechain bus (was "2.2-2")
 
 #define PLUG_LATENCY 0
 #define PLUG_TYPE 0
-#define PLUG_DOES_MIDI_IN 0
+#define PLUG_DOES_MIDI_IN 1
 #define PLUG_DOES_MIDI_OUT 0
 #define PLUG_DOES_MPE 0
 #define PLUG_DOES_STATE_CHUNKS 0
@@ -37,7 +37,7 @@
 // to -- no separate aspect-lock code needed beyond setting it here.
 #define PLUG_WIDTH 1000
 #define PLUG_HEIGHT 750
-#define PLUG_FPS 60
+#define PLUG_FPS 30 // T4-6: 30 fps cap for weak machines; IGraphics only repaints dirty rects, so idle cost stays low
 #define PLUG_SHARED_RESOURCES 0
 #define PLUG_HOST_RESIZE 0
 

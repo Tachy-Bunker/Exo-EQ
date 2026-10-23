@@ -1,0 +1,7 @@
+Batch 6: fix knob labels for filter types 36-44.
+
+Bug found: KnobNamesForType had the comb/ring/FM/formant/phaser/resonator/resample cases at ordinals 49-57. Those ordinals do not exist, so the labels never applied and these types fell back to the generic Cutoff/Reso/Morph/Extra. Cases now sit at 36-44, matching the InitEnum list (index minus one).
+
+Sweep (types 36-44): reso and morph change the sound, extra does not. Extra is now n/a and hidden on all nine types.
+
+ExoEQ.cpp only. Not build-verified.

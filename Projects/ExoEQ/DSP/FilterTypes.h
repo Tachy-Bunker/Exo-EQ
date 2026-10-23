@@ -89,6 +89,7 @@ public:
     mOnePoleB.SetSampleRate(mSampleRate);
     mAirTap.SetSampleRate(mSampleRate);
     mAwZLowpass.SetSampleRate(mSampleRate);
+    mAwZLowpassFull.SetSampleRate(mSampleRate);
     mAwZHighpass.SetSampleRate(mSampleRate);
     mAwZBandpass.SetSampleRate(mSampleRate);
     mAwZNotch.SetSampleRate(mSampleRate);
@@ -150,7 +151,11 @@ public:
     const int zStages = (mParams.morph >= 0.5) ? 2 : 1;
     const int adaptiveStages = std::clamp(1 + static_cast<int>(mParams.morph * 3.999), 1, 4);
 
-    mAwZLowpass.SetParams(AwZKind::Lowpass, mParams.cutoffHz, drive01, zStages);
+    // Z-Lowpass morph is a continuous crossfade between the 1-stage and 2-stage
+    // outputs (was a >=0.5 threshold). morph 0 = 1 stage, morph 1 = 2 stages.
+    mAwZLowpass.SetParams(AwZKind::Lowpass, mParams.cutoffHz, drive01, 1);
+    mAwZLowpassFull.SetParams(AwZKind::Lowpass, mParams.cutoffHz, drive01, 2);
+    mZLowpassMorph = std::clamp(mParams.morph, 0.0, 1.0);
     mAwZHighpass.SetParams(AwZKind::Highpass, mParams.cutoffHz, drive01, zStages);
     mAwZBandpass.SetParams(AwZKind::Bandpass, mParams.cutoffHz, drive01, zStages);
     mAwZNotch.SetParams(AwZKind::Notch, mParams.cutoffHz, drive01, zStages);
@@ -159,6 +164,7 @@ public:
 
     const int xStages = adaptiveStages; // X-family also ported with the 1-4 cascade convention
     mAwXLowpass.SetParams(AwXKind::Lowpass, mParams.cutoffHz, drive01, xStages);
+    mXLowpassInGain = std::pow(std::clamp(mParams.extra, 0.0, 1.0) + 0.9, 4.0); // extra 0.1 = unity
     mAwXHighpass.SetParams(AwXKind::Highpass, mParams.cutoffHz, drive01, xStages);
     mAwXBandpass.SetParams(AwXKind::Bandpass, mParams.cutoffHz, drive01, xStages);
     mAwXNotch.SetParams(AwXKind::Notch, mParams.cutoffHz, drive01, xStages);
@@ -169,6 +175,7 @@ public:
     mAwYHighpass.SetParams(AwYKind::Highpass, mParams.cutoffHz, drive01, mParams.extra);
     mAwYBandpass.SetParams(AwYKind::Bandpass, mParams.cutoffHz, drive01, mParams.extra);
     mAwYNotch.SetParams(AwYKind::Notch, mParams.cutoffHz, drive01, mParams.extra);
+    mYWet = 1.0 - std::clamp(mParams.morph, 0.0, 1.0); // source wet/dry: morph 0 = fully processed
 
     // BiquadNonLin: resonance maps DIRECTLY to Q here (not drive01 -- see
     // AirwindowsBiquadNonLinFilter's header note), morph is the bipolar
@@ -185,8 +192,10 @@ public:
     mAwHermepassHighpass.SetParams(mParams.cutoffHz, mParams.morph);
 
     // AverMatrix: cutoffHz -> tap count (approximate, see header note),
-    // drive01 -> pole/cascade count, morph -> bipolar wet. extra unused.
-    mAwAverMatrix.SetParams(mParams.cutoffHz, drive01, (mParams.morph * 2.0) - 1.0);
+    // drive01 -> pole/cascade count, morph -> bipolar wet, REVERSED so the
+    // default morph (0) is full wet (+1) and morph 1 is the complement (-1).
+    // extra unused.
+    mAwAverMatrix.SetParams(mParams.cutoffHz, drive01, 1.0 - (mParams.morph * 2.0));
 
     // SlewSonic: cutoffHz direct, morph -> stage count (0-3). resonance
     // and extra unused -- fixed verbatim Butterworth-ladder Qs.
@@ -216,6 +225,7 @@ public:
     mAirTap.Reset();
     mCapacitorEnv = 0.0;
     mAwZLowpass.Reset();
+    mAwZLowpassFull.Reset();
     mAwZHighpass.Reset();
     mAwZBandpass.Reset();
     mAwZNotch.Reset();
@@ -294,20 +304,25 @@ public:
 
       case FilterTypeId::AwLowpass2:  return mAwLowpass2.ProcessSample(input);
       case FilterTypeId::AwHighpass2: return mAwHighpass2.ProcessSample(input);
-      case FilterTypeId::AwZLowpass:  return mAwZLowpass.ProcessSample(input);
+      case FilterTypeId::AwZLowpass:  {
+        const double y1 = mAwZLowpass.ProcessSample(input);
+        if (mZLowpassMorph <= 0.0) return y1;
+        const double y2 = mAwZLowpassFull.ProcessSample(input);
+        return y1 + (y2 - y1) * mZLowpassMorph;
+      }
       case FilterTypeId::AwZHighpass: return mAwZHighpass.ProcessSample(input);
       case FilterTypeId::AwZBandpass: return mAwZBandpass.ProcessSample(input);
       case FilterTypeId::AwZNotch:    return mAwZNotch.ProcessSample(input);
-      case FilterTypeId::AwXLowpass:  return mAwXLowpass.ProcessSample(input);
+      case FilterTypeId::AwXLowpass:  return mAwXLowpass.ProcessSample(input * mXLowpassInGain);
       case FilterTypeId::AwXHighpass: return mAwXHighpass.ProcessSample(input);
       case FilterTypeId::AwXBandpass: return mAwXBandpass.ProcessSample(input);
       case FilterTypeId::AwXNotch:    return mAwXNotch.ProcessSample(input);
       case FilterTypeId::AwHoltLowpass: return mAwHoltLowpass.ProcessSample(input);
       case FilterTypeId::AwBiquadStack: return mAwBiquadStack.ProcessSample(input);
-      case FilterTypeId::AwYLowpass:    return mAwYLowpass.ProcessSample(input);
-      case FilterTypeId::AwYHighpass:   return mAwYHighpass.ProcessSample(input);
-      case FilterTypeId::AwYBandpass:   return mAwYBandpass.ProcessSample(input);
-      case FilterTypeId::AwYNotch:      return mAwYNotch.ProcessSample(input);
+      case FilterTypeId::AwYLowpass:    return YWetMix(mAwYLowpass.ProcessSample(input), input);
+      case FilterTypeId::AwYHighpass:   return YWetMix(mAwYHighpass.ProcessSample(input), input);
+      case FilterTypeId::AwYBandpass:   return YWetMix(mAwYBandpass.ProcessSample(input), input);
+      case FilterTypeId::AwYNotch:      return YWetMix(mAwYNotch.ProcessSample(input), input);
       case FilterTypeId::AwBiquadNonLinLowpass:  return mAwBiquadNonLinLowpass.ProcessSample(input);
       case FilterTypeId::AwBiquadNonLinBandpass: return mAwBiquadNonLinBandpass.ProcessSample(input);
       case FilterTypeId::AwZAcidLowpass: return mAwZAcidLowpass.ProcessSample(input);
@@ -397,6 +412,11 @@ private:
 
   // Real Airwindows ports -- see AirwindowsFilters.h.
   AirwindowsZFilter mAwZLowpass, mAwZHighpass, mAwZBandpass, mAwZNotch;
+  AirwindowsZFilter mAwZLowpassFull; // 2-stage partner for the continuous Z-Lowpass morph
+  double mZLowpassMorph = 0.0;
+  double mXLowpassInGain = 1.0;
+  double mYWet = 1.0;
+  double YWetMix(double processed, double dry) const { return processed * mYWet + dry * (1.0 - mYWet); }
   AirwindowsAdaptiveFilter mAwLowpass2, mAwHighpass2;
   AirwindowsXFilter mAwXLowpass, mAwXHighpass, mAwXBandpass, mAwXNotch;
   AirwindowsHoltFilter mAwHoltLowpass;

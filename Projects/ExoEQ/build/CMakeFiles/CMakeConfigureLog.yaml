@@ -131,7 +131,7 @@ events:
       Microsoft (R) Build Engine version 16.11.6+a918ceb31 for .NET Framework
       Copyright (C) Microsoft Corporation. All rights reserved.
       
-      Build started 14/10/2026 05:40:18.
+      Build started 16/10/2026 01:29:54.
       Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\4.1.1\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
       PrepareForBuild:
         Creating directory "Debug\\".
@@ -157,7 +157,7 @@ events:
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:01.21
+      Time Elapsed 00:00:03.83
       
       
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -1276,7 +1276,7 @@ events:
       Microsoft (R) Build Engine version 16.11.6+a918ceb31 for .NET Framework
       Copyright (C) Microsoft Corporation. All rights reserved.
       
-      Build started 14/10/2026 05:40:20.
+      Build started 16/10/2026 01:29:59.
       Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\4.1.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
       PrepareForBuild:
         Creating directory "Debug\\".
@@ -1302,7 +1302,7 @@ events:
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:01.04
+      Time Elapsed 00:00:00.84
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -1536,8 +1536,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-xuguyo"
-      binary: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-xuguyo"
+      source: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-2o7a2a"
+      binary: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-2o7a2a"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
       CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1546,39 +1546,39 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-xuguyo'
+        Change Dir: 'F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-2o7a2a'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_c980d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_95570.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
         Microsoft (R) Build Engine version 16.11.6+a918ceb31 for .NET Framework
         Copyright (C) Microsoft Corporation. All rights reserved.
         
-        Build started 14/10/2026 05:40:21.
-        Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xuguyo\\cmTC_c980d.vcxproj" on node 1 (default targets).
+        Build started 16/10/2026 01:30:00.
+        Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-2o7a2a\\cmTC_95570.vcxproj" on node 1 (default targets).
         PrepareForBuild:
-          Creating directory "cmTC_c980d.dir\\Debug\\".
-          Creating directory "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xuguyo\\Debug\\".
-          Creating directory "cmTC_c980d.dir\\Debug\\cmTC_c980d.tlog\\".
+          Creating directory "cmTC_95570.dir\\Debug\\".
+          Creating directory "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-2o7a2a\\Debug\\".
+          Creating directory "cmTC_95570.dir\\Debug\\cmTC_95570.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_c980d.dir\\Debug\\cmTC_c980d.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Creating "cmTC_95570.dir\\Debug\\cmTC_95570.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_c980d.dir\\Debug\\\\" /Fd"cmTC_c980d.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_95570.dir\\Debug\\\\" /Fd"cmTC_95570.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.29.30159 for x64
           CMakeCCompilerABI.c
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_c980d.dir\\Debug\\\\" /Fd"cmTC_c980d.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_95570.dir\\Debug\\\\" /Fd"cmTC_95570.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /OUT:"F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xuguyo\\Debug\\cmTC_c980d.exe" /INCREMENTAL /ILK:"cmTC_c980d.dir\\Debug\\cmTC_c980d.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-xuguyo/Debug/cmTC_c980d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-xuguyo/Debug/cmTC_c980d.lib" /MACHINE:X64  /machine:x64 cmTC_c980d.dir\\Debug\\CMakeCCompilerABI.obj
-          cmTC_c980d.vcxproj -> F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xuguyo\\Debug\\cmTC_c980d.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /OUT:"F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-2o7a2a\\Debug\\cmTC_95570.exe" /INCREMENTAL /ILK:"cmTC_95570.dir\\Debug\\cmTC_95570.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-2o7a2a/Debug/cmTC_95570.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-2o7a2a/Debug/cmTC_95570.lib" /MACHINE:X64  /machine:x64 cmTC_95570.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_95570.vcxproj -> F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-2o7a2a\\Debug\\cmTC_95570.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_c980d.dir\\Debug\\cmTC_c980d.tlog\\unsuccessfulbuild".
-          Touching "cmTC_c980d.dir\\Debug\\cmTC_c980d.tlog\\cmTC_c980d.lastbuildstate".
-        Done Building Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xuguyo\\cmTC_c980d.vcxproj" (default targets).
+          Deleting file "cmTC_95570.dir\\Debug\\cmTC_95570.tlog\\unsuccessfulbuild".
+          Touching "cmTC_95570.dir\\Debug\\cmTC_95570.tlog\\cmTC_95570.lastbuildstate".
+        Done Building Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-2o7a2a\\cmTC_95570.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:01.11
+        Time Elapsed 00:00:00.83
         
       exitCode: 0
   -
@@ -1618,8 +1618,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-5eimkm"
-      binary: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-5eimkm"
+      source: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-d5abtk"
+      binary: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-d5abtk"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1629,39 +1629,39 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-5eimkm'
+        Change Dir: 'F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-d5abtk'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_03aee.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_da6c7.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
         Microsoft (R) Build Engine version 16.11.6+a918ceb31 for .NET Framework
         Copyright (C) Microsoft Corporation. All rights reserved.
         
-        Build started 14/10/2026 05:40:23.
-        Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5eimkm\\cmTC_03aee.vcxproj" on node 1 (default targets).
+        Build started 16/10/2026 01:30:02.
+        Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d5abtk\\cmTC_da6c7.vcxproj" on node 1 (default targets).
         PrepareForBuild:
-          Creating directory "cmTC_03aee.dir\\Debug\\".
-          Creating directory "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5eimkm\\Debug\\".
-          Creating directory "cmTC_03aee.dir\\Debug\\cmTC_03aee.tlog\\".
+          Creating directory "cmTC_da6c7.dir\\Debug\\".
+          Creating directory "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d5abtk\\Debug\\".
+          Creating directory "cmTC_da6c7.dir\\Debug\\cmTC_da6c7.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_03aee.dir\\Debug\\cmTC_03aee.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Creating "cmTC_da6c7.dir\\Debug\\cmTC_da6c7.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_03aee.dir\\Debug\\\\" /Fd"cmTC_03aee.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_da6c7.dir\\Debug\\\\" /Fd"cmTC_da6c7.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.29.30159 for x64
           CMakeCXXCompilerABI.cpp
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_03aee.dir\\Debug\\\\" /Fd"cmTC_03aee.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_da6c7.dir\\Debug\\\\" /Fd"cmTC_da6c7.dir\\Debug\\vc142.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /OUT:"F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5eimkm\\Debug\\cmTC_03aee.exe" /INCREMENTAL /ILK:"cmTC_03aee.dir\\Debug\\cmTC_03aee.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-5eimkm/Debug/cmTC_03aee.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-5eimkm/Debug/cmTC_03aee.lib" /MACHINE:X64  /machine:x64 cmTC_03aee.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_03aee.vcxproj -> F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5eimkm\\Debug\\cmTC_03aee.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /OUT:"F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d5abtk\\Debug\\cmTC_da6c7.exe" /INCREMENTAL /ILK:"cmTC_da6c7.dir\\Debug\\cmTC_da6c7.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-d5abtk/Debug/cmTC_da6c7.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/CMakeScratch/TryCompile-d5abtk/Debug/cmTC_da6c7.lib" /MACHINE:X64  /machine:x64 cmTC_da6c7.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_da6c7.vcxproj -> F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d5abtk\\Debug\\cmTC_da6c7.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_03aee.dir\\Debug\\cmTC_03aee.tlog\\unsuccessfulbuild".
-          Touching "cmTC_03aee.dir\\Debug\\cmTC_03aee.tlog\\cmTC_03aee.lastbuildstate".
-        Done Building Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5eimkm\\cmTC_03aee.vcxproj" (default targets).
+          Deleting file "cmTC_da6c7.dir\\Debug\\cmTC_da6c7.tlog\\unsuccessfulbuild".
+          Touching "cmTC_da6c7.dir\\Debug\\cmTC_da6c7.tlog\\cmTC_da6c7.lastbuildstate".
+        Done Building Project "F:\\Work\\Exomusica\\Tools\\ExoEQV1\\Projects\\ExoEQ\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d5abtk\\cmTC_da6c7.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:00.84
+        Time Elapsed 00:00:01.02
         
       exitCode: 0
   -
@@ -1692,6 +1692,659 @@ events:
       Running the CXX compiler's linker: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/link.exe" "-v"
       Microsoft (R) Incremental Linker Version 14.29.30159.0
       Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:17 (find_package)"
+    name: "iPlug2"
+    configs:
+      -
+        filename: "iPlug2Config.cmake"
+        kind: "cmake"
+      -
+        filename: "iplug2-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "iPlug2"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/pkgRedirects/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "F:/Work/Exomusica/Tools/ExoEQV1/Projects/ExoEQ/build/CMakeFiles/pkgRedirects/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/VC/vcpackages/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/VC/vcpackages/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/TestWindow/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/TestWindow/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/TeamFoundation/Team Explorer/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/TeamFoundation/Team Explorer/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/Roslyn/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/Roslyn/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Team Tools/Performance Tools/x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Team Tools/Performance Tools/x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Team Tools/Performance Tools/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Team Tools/Performance Tools/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Common/VSPerfCollectionTools/vs2019/x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Common/VSPerfCollectionTools/vs2019/x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Common/VSPerfCollectionTools/vs2019/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Common/VSPerfCollectionTools/vs2019/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft SDKs/Windows/v10.0A/bin/NETFX 4.8 Tools/x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft SDKs/Windows/v10.0A/bin/NETFX 4.8 Tools/x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools/devinit/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools/devinit/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.22000.0/x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.22000.0/x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Kits/10/bin/x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Kits/10/bin/x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/msys64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/msys64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Common Files/Oracle/Java/javapath/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Common Files/Oracle/Java/javapath/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Python311/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Python311/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Python311/Scripts/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Python311/Scripts/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/wbem/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/wbem/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/WindowsPowerShell/v1.0/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/WindowsPowerShell/v1.0/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/OpenSSH/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/OpenSSH/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/dotnet/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/dotnet/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/GTK2-Runtime/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/GTK2-Runtime/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/ProgramData/chocolatey/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/ProgramData/chocolatey/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Live/Shared/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Live/Shared/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Microsoft Windows Performance Toolkit/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Microsoft Windows Performance Toolkit/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Pandoc/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Pandoc/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/ffmpeg-2024-07-24-git-896c22ef00-full_build/FFMPEG bin/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/ffmpeg-2024-07-24-git-896c22ef00-full_build/FFMPEG bin/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/yt-dlp_win/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/yt-dlp_win/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/tools/php85/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/tools/php85/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Games/ares-windows-x64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Games/ares-windows-x64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/GnuWin32/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/GnuWin32/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Music Softwares/vgmstream-cli-win64/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Music Softwares/vgmstream-cli-win64/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/nodejs/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/nodejs/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/NkxTool-win-x64-1.3.0/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/NkxTool-win-x64-1.3.0/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/nginx-1.31.4/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/nginx-1.31.4/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "F:/Software/Utility/LLVM/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "F:/Software/Utility/LLVM/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Git-Xet/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Git-Xet/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/git-xet/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/Downloads/Softwares/Utility/git-xet/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/WSL/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/WSL/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/.unsloth/studio/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/.unsloth/studio/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python314/Scripts/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python314/Scripts/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python314/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python314/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python313/Scripts/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python313/Scripts/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python313/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Python/Python313/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/.cargo/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/.cargo/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Microsoft/WindowsApps/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Microsoft/WindowsApps/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Microsoft VS Code/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Microsoft VS Code/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Git/cmd/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Programs/Git/cmd/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/.lmstudio/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/.lmstudio/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Roaming/npm/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Roaming/npm/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Microsoft/WinGet/Links/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/ShrekitoBoy/AppData/Local/Microsoft/WinGet/Links/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/iPlug2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/iplug2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found: null
+    search_context:
+      ENV{PATH}:
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\VC\\VCPackages"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\bin\\Roslyn"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Performance Tools\\x64"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Performance Tools"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Common\\VSPerfCollectionTools\\vs2019\\\\x64"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Common\\VSPerfCollectionTools\\vs2019\\"
+        - "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v10.0A\\bin\\NETFX 4.8 Tools\\x64\\"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\devinit"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.22000.0\\x64"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\\\MSBuild\\Current\\Bin"
+        - "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\"
+        - "C:\\msys64"
+        - "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Python311\\"
+        - "C:\\Python311\\Scripts\\"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\WINDOWS\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files (x86)\\GTK2-Runtime\\bin"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\Program Files (x86)\\Windows Live\\Shared"
+        - "C:\\Program Files\\Microsoft Windows Performance Toolkit\\"
+        - "C:\\Program Files\\Pandoc\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Utility\\ffmpeg-2024-07-24-git-896c22ef00-full_build\\FFMPEG bin"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Utility\\yt-dlp_win"
+        - "C:\\tools\\php85"
+        - "C:\\tools\\php85\\php.exe"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Games\\ROMS\\Misc Tools\\VideoGameSoundConverter_2.0\\vgmstream\\vgmstream.exe"
+        - "C:\\ProgramData\\chocolatey\\lib\\Wget\\tools\\wget.exe"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Games\\ares-windows-x64"
+        - "C:\\Program Files (x86)\\GnuWin32\\bin"
+        - "C:\\Python311\\Scripts"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Music Softwares\\vgmstream-cli-win64"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Utility\\NkxTool-win-x64-1.3.0"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Utility\\nginx-1.31.4"
+        - "F:\\Software\\Utility\\LLVM\\bin"
+        - "C:\\Program Files\\Git-Xet\\"
+        - "C:\\Users\\ShrekitoBoy\\Downloads\\Softwares\\Utility\\git-xet"
+        - "C:\\Program Files\\WSL\\"
+        - "C:\\Users\\ShrekitoBoy\\.unsloth\\studio\\bin"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Programs\\Python\\Python314\\"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Programs\\Python\\Python313\\"
+        - "C:\\Users\\ShrekitoBoy\\.cargo\\bin"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Programs\\Git\\cmd"
+        - "C:\\Users\\ShrekitoBoy\\.lmstudio\\bin"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Python\\bin"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Roaming\\npm"
+        - "C:\\Users\\ShrekitoBoy\\AppData\\Local\\Microsoft\\WinGet\\Links"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files/ExoEQ"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files/ExoEQ"
+...
+
+---
+events:
   -
     kind: "find-v1"
     backtrace:

@@ -1,0 +1,15 @@
+Batch 5: label table rebuilt from a sweep of every filter type (ordinals 0-35).
+
+Method: for each type, output signature compared with reso, morph and extra changed, at 1 kHz cutoff with a three-tone input. Tested at several morph/reso contexts so wet-gated params (BiquadNonLin, Y family) show up.
+
+Result, by ordinal:
+- Morph does nothing: LP6, LP12/24/48, HP6, HP12/24/48, BP12/24, Notch12. Morph is hidden for these.
+- Reso does nothing: LP6, HP6, AW Z-Highpass, AW X-Highpass, Hermepass, SlewSonic.
+- Extra does nothing: everything except AW X-Lowpass (In Gain), the AW Y family (Curve), BiquadNonLin LP/BP (NonLin) and AW Z-Acid Lowpass.
+- AW Lowpass2 extra: no effect (confirmed). Hidden.
+- BiquadNonLin extra: level-dependent. At 0.5 amplitude, extra 0 vs 1 gives -0.27 vs +1.46 dB at cutoff/2 (1 kHz). At 0.001 amplitude it does nothing. Kept visible because it works at normal levels. The effect shrinks at higher cutoffs (+1.1 dB at 8 kHz, +0.2 dB at 16 kHz).
+
+Not covered: ordinals 36 and up (comb, ring mod, FM, formant, phaser, resonators, resample). They keep the default labels because this sweep did not reach them. Check them the same way if you want them hidden too.
+
+Changed: ExoEQ.cpp, KnobNamesForType (ordinals 0-35 rewritten; 36+ unchanged). Visibility and reflow logic are unchanged.
+Not build-verified.

@@ -12,6 +12,7 @@
 #include "DSP/TransformFilter.h"
 #include "DSP/ImageToEq.h"
 #include "DSP/FftContainer.h"
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -63,9 +64,10 @@ enum EBandParamOffset
   // param's InitEnum call in ExoEQ.cpp must match exactly.
   kBandFilterType,
   kBandKeyTrackAmt,
+  kBandMidiChannel,
   kBandMute,
   kBandSolo,
-  // "Active" is new: with 128 bands always existing as real params, this
+  // "Active" is new: with 256 bands always existing as real params, this
   // is what lets a user's project only show/use however many bands they've
   // actually added, while the rest sit fully inert. Inactive bands are
   // forced muted (see ReadBandSettings in ExoEQ.cpp) regardless of their
@@ -118,7 +120,7 @@ enum EBandParamOffset
   // NOT a filter-type dropdown entry -- see DSP/AirwindowsFilters.h's
   // AirwindowsEnergy2Processor and DSP/BandChain.h's
   // kMaxEnergy2Instances/RecomputeEnergy2Slots for why. These 4 params
-  // exist on every one of the 128 band slots same as everything else
+  // exist on every one of the 256 band slots same as everything else
   // (cheap to declare/automate), but only kMaxEnergy2Instances=20
   // enabled bands actually get live Energy2 processing at once --
   // enforced in DSP/BandChain.h, not here. The 2 grouped knobs
@@ -379,7 +381,14 @@ enum EParams
   // themselves don't care what axis the GUI drew their knob position on).
   kGlobalFreqAxisMel,
 
-  kNumParams = kGlobalFreqAxisMel + 1
+  // M1 bypass: a plain on/off that passes the input straight to the output and
+  // skips all DSP. Appended last so existing saved state keeps its indices.
+  kGlobalBypass,
+
+  // T4-8: Low Motion. Turns off the load sweep and any other UI motion. Appended last like Bypass.
+  kGlobalLowMotion,
+
+  kNumParams = kGlobalLowMotion + 1
 };
 
 constexpr int kNumFractalCustomVars = 9;
@@ -448,6 +457,15 @@ public:
   // same can't-verify-against-the-real-SDK caveat as every other
   // UI/SDK-signature note in this project; if this doesn't compile
   // against your vendored headers, paste the error.
+  // The circle graph is attached with kNoParameter, so iPlug2 never tells it
+  // about param changes -- which is why turning a knob moved nothing on the
+  // circle, while dragging a node updated the knobs fine. This hook fires on the
+  // UI thread for every param change, from any source, and repaints the graph.
+  void OnParamChangeUI(int paramIdx, EParamSource source) override;
+  void UpdateBandFxBadge(); // T2-7
+  void UpdateAbLabel();     // T2-9
+  void OnUIClose() override;
+
   bool SerializeState(IByteChunk& chunk) const override;
   int UnserializeState(const IByteChunk& chunk, int startPos) override;
 
@@ -593,6 +611,7 @@ private:
   // ExoEQ.cpp for why that reproduces Phase 1's old mLastMidiNote behavior
   // exactly.
   exoeq::KeyTracker mKeyTracker;
+  exoeq::MultiChannelKeyTracker mMultiChannelKeyTracker;
 
   // Real MTS-ESP client (DSP/MtsEspClient.h, vendored from
   // Vendor/MTS-ESP/libMTSClient.h/.cpp). Constructed unconditionally --
@@ -628,6 +647,22 @@ private:
   // circleView is constructed; null before the graph is first built
   // (e.g. a headless/DSP-only instantiation), checked before use.
   class CircleViewControl* mCircleView = nullptr;
+
+  // Set during layout. Re-applies the per-filter-type knob names for whichever
+  // band is currently in the panel. Called from OnParamChangeUI so the labels
+  // follow a filter-type change, not just a new selection.
+  std::function<void()> mRefreshKnobNames;
+
+  // M1 A/B compare: two full-parameter snapshots. mAbActive is the slot being edited.
+  // Not saved with the project (session-only).
+  std::vector<double> mAbSlot[2];
+  bool mAbHasSlot[2] = { false, false };
+  int mAbActive = 0;
+  iplug::igraphics::IControl* mAbButton = nullptr;
+  iplug::igraphics::IControl* mBandFxButton = nullptr; // T2-7
+  void SnapshotToSlot(int slot);
+  void RecallSlot(int slot);
+  void ToggleAB();
 
   // ROUND 27 -- most hosts restore plugin state (UnserializeState) BEFORE
   // the GUI is ever opened (OnLayout only runs the first time someone
@@ -709,4 +744,8 @@ private:
   // mLayoutFunc call -- editor teardown/recreation (e.g. a host closing
   // and reopening the UI) must not leave stale pointers here.
   std::vector<iplug::igraphics::IControl*> mTabControls[kNumGlobalTabs];
+  int mSavedSelCircle = 0; // selection kept across a GUI close/reopen (see OnUIClose / OnLayout)
+  int mSavedSelBand = -1;
+  int mActiveTab = kTabGroups; // which global tab is showing; read by SwitchGlobalTab/showGlobalFx
+  void SwitchGlobalTab(int tab);
 };

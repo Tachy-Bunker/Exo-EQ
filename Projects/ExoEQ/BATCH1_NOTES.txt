@@ -1,0 +1,18 @@
+Batch 1 Airwindows fixes (approved).
+
+DSP (Projects/ExoEQ/DSP/FilterTypes.h):
+- AW Z-Lowpass: morph is now a continuous crossfade between the 1-stage and 2-stage
+  outputs (was a >=0.5 threshold, so 0.5 and 0.9 sounded identical). morph 0 = 1 stage, 1 = 2 stages.
+  Cost: a second filter runs only while morph > 0.
+- AW X-Lowpass: extra is now the source's input gain, pow(extra+0.9, 4). Default extra 0.1 = unity.
+  Presets that set extra on X-Lowpass will change level.
+- AW Y family (Lowpass/Highpass/Bandpass/Notch): morph is now the source's wet/dry mix, mapped as
+  dry = morph (morph 0 = fully processed, the default; morph 1 = bypass). Presets that set morph on Y types will change.
+
+UI (Projects/ExoEQ/ExoEQ.cpp):
+- Morph and Extra moved from the Band FX drawer into the always-visible compact row (8 cells).
+- Per-type labels: Z-Lowpass "Stages"; X-Lowpass Extra "In Gain"; Y family "Dry"/"Curve"; BiquadNonLin "Wet"/"NonLin".
+- kCompactPanelCount is now 9.
+
+Not verified in a plugin build. Run tools/ResponseCheck.cpp or a host build to confirm the layout at your window size.
+Smoke test (sine 1 kHz, 48 kHz): Z morph 0 -12.65 dB, 0.5 -15.82 dB, 1 -12.96 dB; Y morph 1 = bypass.

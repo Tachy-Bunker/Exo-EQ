@@ -149,4 +149,48 @@ private:
   double mTargetHz = 440.0;
 };
 
+// Fixed-size MIDI channel bank for multichannel key tracking. Each channel
+// owns the same latch, tuning, MTS-ESP, and glide behavior as the original
+// tracker, but note stacks remain isolated. The array is deliberately fixed:
+// MIDI has exactly 16 channels and the audio path must not allocate when a
+// note arrives.
+class MultiChannelKeyTracker
+{
+public:
+  void SetSampleRate(double sampleRate) { for (auto& tracker : mChannels) tracker.SetSampleRate(sampleRate); }
+  void SetTuning(const TuningTable* tuning) { for (auto& tracker : mChannels) tracker.SetTuning(tuning); }
+  void SetMtsEspClient(const MtsEspClient* client) { for (auto& tracker : mChannels) tracker.SetMtsEspClient(client); }
+  void SetUseMtsEsp(bool use) { for (auto& tracker : mChannels) tracker.SetUseMtsEsp(use); }
+  void SetLatch(bool latch) { for (auto& tracker : mChannels) tracker.SetLatch(latch); }
+  void SetPortamentoMs(double ms) { for (auto& tracker : mChannels) tracker.SetPortamentoMs(ms); }
+
+  void NoteOn(int midiChannel, int midiNote)
+  {
+    if (midiChannel >= 0 && midiChannel < 16) mChannels[midiChannel].NoteOn(midiNote);
+  }
+
+  void NoteOff(int midiChannel, int midiNote)
+  {
+    if (midiChannel >= 0 && midiChannel < 16) mChannels[midiChannel].NoteOff(midiNote);
+  }
+
+  double Tick(int midiChannel)
+  {
+    return (midiChannel >= 0 && midiChannel < 16) ? mChannels[midiChannel].Tick() : 440.0;
+  }
+
+  double CurrentHz(int midiChannel) const
+  {
+    return (midiChannel >= 0 && midiChannel < 16) ? mChannels[midiChannel].CurrentHz() : 440.0;
+  }
+
+  bool AnyNoteHeld(int midiChannel) const
+  {
+    return midiChannel >= 0 && midiChannel < 16 && mChannels[midiChannel].AnyNoteHeld();
+  }
+
+private:
+  KeyTracker mChannels[16];
+};
+
 } // namespace exoeq

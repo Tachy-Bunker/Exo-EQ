@@ -1,0 +1,11 @@
+Batch 2 audit (Hermepass, AverMatrix, SlewSonic) plus knob labels.
+
+Measured (48 kHz, 1 kHz sine, 1000 Hz cutoff):
+- AW SlewSonic: resonance has no effect (fixed Butterworth-ladder Qs, by design). Morph works: stage count via continuous wet.
+- AW Hermepass: resonance and extra have no effect (by design). Morph = pole slope, works.
+- AW AverMatrix: resonance (drive -> poles) works at full wet (-1.5 dB vs -8.1 dB at 1 kHz for reso 0.1 vs 10). Morph is bipolar wet.
+  NOTE: the default morph is 0, which maps to wet = -1, so the default sound is not the dry signal (+3.3 dB at 1 kHz). Not changed; decide whether the default should move to 1.0 (wet = +1).
+
+UI (ExoEQ.cpp, KnobNamesForType): unused knobs now read "n/a" on those types, so the knob no longer looks live when it does nothing.
+Z-Lowpass extra also reads "n/a" (unused).
+Not changed: the knobs still accept drags on n/a types. Dimming or disabling them is a later pass.

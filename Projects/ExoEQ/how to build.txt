@@ -1,0 +1,5 @@
+open Developer Command Prompt for VS 2019
+
+cmake -B build -G "Visual Studio 16 2019" -A x64 -DIPLUG2_DIR=..\..\iPlug2 && cmake --build build --config Release
+
+cmake --build build --config RelWithDebInfo --target ExoEQ-vst3 --clean-first
